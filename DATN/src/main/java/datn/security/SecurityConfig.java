@@ -14,9 +14,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Tắt CSRF để gọi API từ JS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/gio-hang.html", "/css/**", "/js/**", "/images/**").permitAll() // Cho phép truy cập không cần login
-                        .requestMatchers("/api/**").permitAll() // Mở quyền REST API
-                        .anyRequest().authenticated() // Các URL khác cần đăng nhập
+                        .requestMatchers("/","/tang-so-luong","/login","/login.html", "/gio-hang", "/gio-hang.html", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/gio-hang/**").permitAll()
+                        .anyRequest().authenticated()
                 );
 
         return http.build();

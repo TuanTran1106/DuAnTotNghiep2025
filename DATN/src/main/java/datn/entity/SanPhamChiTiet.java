@@ -20,6 +20,9 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "ten_san_pham")
+    private String tenSanPham;
+
     @Column(name = "mau_sac")
     private String mauSac;
 

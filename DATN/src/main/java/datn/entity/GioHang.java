@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -20,17 +22,14 @@ public class GioHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "so_luong")
-    private int soLuong;
 
-    @Column(name = "ngay_them")
-    private LocalDate ngayThem;
+    @Column(name = "ngay_tao")
+    private LocalDate ngayTao;
 
     @ManyToOne
     @JoinColumn(name = "id_nguoi_dung", referencedColumnName = "id")
     private NguoiDung nguoiDung;
 
-    @ManyToOne
-    @JoinColumn(name = "id_san_pham_chi_tiet", referencedColumnName = "id")
-    private SanPhamChiTiet sanPhamChiTiet;
+    @OneToMany(mappedBy = "gioHang", cascade = CascadeType.ALL)
+    private List<ChiTietGioHang> chiTietGioHangList = new ArrayList<>();
 }

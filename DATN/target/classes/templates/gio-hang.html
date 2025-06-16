@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Giỏ hàng của bạn</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- nếu bạn có CSS riêng -->
+</head>
+<body>
+<h2>Giỏ hàng</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Tên sản phẩm</th>
+        <th>Giá bán</th>
+        <th>Số lượng</th>
+        <th>Thành tiền</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ctgh : ${gioHang}">
+        <td th:text="${ctgh.sanPhamChiTiet.tenSanPham}"></td>
+        <td th:text="${#numbers.formatDecimal(ctgh.sanPhamChiTiet.giaBan, 0, 'POINT', 0, 'COMMA')} + ' ₫'"></td>
+        <td th:text="${ctgh.soLuong}"></td>
+        <td th:text="${#numbers.formatDecimal(ctgh.soLuong * ctgh.sanPhamChiTiet.giaBan, 0, 'POINT', 0, 'COMMA')} + ' ₫'"></td>
+        <td>
+            <!-- Bạn có thể thêm nút xóa hoặc cập nhật ở đây -->
+            <form th:action="@{/gio-hang/xoa}" method="post">
+                <input type="hidden" name="id" th:value="${ctgh.id}" />
+                <button type="submit">Xóa</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/gio-hang/tang-so-luong}" method="post" style="display:inline;">
+                <input type="hidden" name="id" th:value="${ctgh.id}" />
+                <button type="submit">+</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/gio-hang/giam-so-luong}" method="post" style="display:inline;">
+                <input type="hidden" name="id" th:value="${ctgh.id}" />
+                <button type="submit">-</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/">← Tiếp tục mua hàng</a>
+</body>
+</html>

@@ -1,45 +1,74 @@
 package datn.controller;
 
+import datn.entity.ChiTietGioHang;
 import datn.entity.GioHang;
+import datn.entity.NguoiDung;
+import datn.entity.SanPhamChiTiet;
+import datn.repository.SanPhamChiTietRepo;
+import datn.service.ChiTietGioHangService;
 import datn.service.GioHangService;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @Controller
-@RequestMapping("api/gio-hang")
-@AllArgsConstructor
+@RequestMapping("/gio-hang")
+
 public class GioHangController {
-    private final GioHangService gioHangService;
+    @Autowired
+    private ChiTietGioHangService chiTietGioHangService;
+
+    @Autowired
+    private SanPhamChiTietRepo sanPhamChiTietRepo;
 
     @GetMapping
-    public ResponseEntity<List<GioHang>> getGioHang(){
-        List<GioHang> gioHangs=gioHangService.getGioHang();
-        return ResponseEntity.ok(gioHangs);
+    public String hienThiGioHang(Model model, HttpSession session) {
+        NguoiDung nguoiDung = (NguoiDung) session.getAttribute("nguoiDung");
+
+        if (nguoiDung == null) {
+            return "redirect:/login"; // hoặc bất kỳ trang nào bạn muốn
+        }
+
+        List<ChiTietGioHang> gioHang = chiTietGioHangService.layTheoNguoiDung(nguoiDung);
+        model.addAttribute("gioHang", gioHang);
+        return "gio-hang";
     }
-    @GetMapping("{id}")
-    public ResponseEntity<GioHang> getOne(@PathVariable("id") int id) {
-        GioHang gioHang = gioHangService.getOneGioHang(id);
-        return ResponseEntity.ok(gioHang);
+
+    @PostMapping("/them")
+    public String themVaoGio(@RequestParam("id_spct") Integer idSpct,
+                             @RequestParam("so_luong") int soLuong,
+                             @SessionAttribute("nguoiDung") NguoiDung nguoiDung) {
+
+        SanPhamChiTiet spct = sanPhamChiTietRepo.findById(idSpct).orElse(null);
+        if (spct != null) {
+            chiTietGioHangService.themVaoGio(nguoiDung, spct, soLuong);
+        }
+
+        return "redirect:/gio-hang";
     }
-    @PutMapping("{id}")
-    public ResponseEntity<GioHang> updateGioHang(@RequestBody GioHang gioHang, @PathVariable("id") int id){
-        GioHang updateGioHang= gioHangService.updateGioHang(gioHang,id);
-        return  ResponseEntity.ok(updateGioHang);
+    @PostMapping("/xoa")
+    public String xoaKhoiGio(@RequestParam("id") int id) {
+        chiTietGioHangService.xoaKhoiGio(id);
+        return "redirect:/gio-hang";
     }
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteGioHang(@PathVariable("id") int id){
-        gioHangService.deleteGioHang(id);
-        return ResponseEntity.ok("Delete order with id ="+id);
+
+    @PostMapping("/tang-so-luong")
+    public String tangSoLuong(@RequestParam("id") int id) {
+        chiTietGioHangService.tangSoLuong(id);
+        return "redirect:/gio-hang";
     }
-    @PostMapping("/create")
-    public ResponseEntity<GioHang> createGioHang(@RequestBody GioHang gioHang) {
-        gioHang.setId(null);
-        GioHang createGioHang = gioHangService.createGioHang(gioHang);
-        return ResponseEntity.ok(createGioHang);
+
+    @PostMapping("/giam-so-luong")
+    public String giamSoLuong(@RequestParam("id") int id) {
+        chiTietGioHangService.giamSoLuong(id);
+        return "redirect:/gio-hang";
     }
+
 
 }

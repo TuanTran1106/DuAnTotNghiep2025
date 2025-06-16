@@ -46,7 +46,7 @@ public class NguoiDung {
     private LocalDate ngaySua;
 
     @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private PhanQuyen phanQuyen;
 
 }
