@@ -14,7 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -22,7 +28,7 @@ import java.util.List;
 
 public class GioHangController {
     @Autowired
-    private ChiTietGioHangService chiTietGioHangService;
+    private ChiTietGioHangService   chiTietGioHangService;
 
     @Autowired
     private SanPhamChiTietRepo sanPhamChiTietRepo;
@@ -36,7 +42,12 @@ public class GioHangController {
         }
 
         List<ChiTietGioHang> gioHang = chiTietGioHangService.layTheoNguoiDung(nguoiDung);
+
+        BigDecimal tongTien = gioHang.stream()
+                .map(item -> item.getSanPhamChiTiet().getGiaBan().multiply(BigDecimal.valueOf(item.getSoLuong())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         model.addAttribute("gioHang", gioHang);
+        model.addAttribute("tongTien", tongTien);
         return "gio-hang";
     }
 
@@ -68,6 +79,19 @@ public class GioHangController {
     public String giamSoLuong(@RequestParam("id") int id) {
         chiTietGioHangService.giamSoLuong(id);
         return "redirect:/gio-hang";
+    }
+    @PostMapping("/upload")
+    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
+        String uploadDir = "src/main/resources/static/images/";
+        String fileName = file.getOriginalFilename();
+        Path path = Paths.get(uploadDir + fileName);
+        Files.write(path, file.getBytes());
+
+        SanPhamChiTiet sp = new SanPhamChiTiet();
+        sp.setTenSanPham("Đồng hồ XYZ");
+        sp.setHinhAnh("/images/" + fileName);
+        sanPhamChiTietRepo.save(sp);
+        return "redirect:/sanpham/list";
     }
 
 

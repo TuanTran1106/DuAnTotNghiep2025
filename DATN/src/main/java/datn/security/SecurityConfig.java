@@ -12,9 +12,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Tắt CSRF để gọi API từ JS
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/gio-hang/**").permitAll()
+                        .requestMatchers("/gio-hang/**",
+                                "/upload",             // Cho phép upload ảnh
+                                "/images/**",          // Cho phép truy cập ảnh tĩnh
+                                "/sanpham/**",         // Nếu có dùng redirect hoặc form
+                                "/",                   // Trang chủ nếu cần
+                                "/**" ).permitAll()
                         .anyRequest().authenticated()
                 );
 
