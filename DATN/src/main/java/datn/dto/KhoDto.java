@@ -33,4 +33,14 @@ public class KhoDto {
 
     private String tenDanhMuc;
 
+    public KhoDto(Integer id, String tenSanPham, String tenThuongHieu, String tenDanhMuc, Integer soLuong, String mauSac, String kichThuoc, BigDecimal giaBan) {
+        this.id = id;
+        this.tenSanPham = tenSanPham;
+        this.tenThuongHieu = tenThuongHieu;
+        this.tenDanhMuc = tenDanhMuc;
+        this.soLuong = soLuong;
+        this.mauSac = mauSac;
+        this.kichThuoc = kichThuoc;
+        this.giaBan = giaBan;
+    }
 }

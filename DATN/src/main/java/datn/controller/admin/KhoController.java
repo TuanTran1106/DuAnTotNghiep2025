@@ -1,21 +1,17 @@
 package datn.controller.admin;
 
 import datn.dto.KhoDto;
-import datn.entity.SanPhamChiTiet;
-import datn.service.HinhAnhSanPhamService;
 import datn.service.KhoService;
 import lombok.AllArgsConstructor;
-import org.springframework.format.number.money.MonetaryAmountFormatter;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.DefaultFormatter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/quan-ly/kho")
@@ -23,10 +19,16 @@ import java.util.Optional;
 public class KhoController {
 
     private final KhoService khoService;
-    private final HinhAnhSanPhamService hinhAnhSanPhamService;
+
 
     @GetMapping("")
-    public String home (Model model) {
+    public String home (@RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "2") int size,
+                        @RequestParam(value = "keyword", required = false) String keyword,
+                        @RequestParam(value = "thuongHieu", required = false) Integer thuongHieuId,
+                        @RequestParam(value = "danhMuc", required = false) Integer danhMucId,
+                        @RequestParam(value = "status", required = false) Integer trangThai,
+                        Model model) {
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
@@ -46,12 +48,25 @@ public class KhoController {
         model.addAttribute("totalProductIsOut", khoService.getTotalProductIsOut());
 
         // ds tồn kho
-        model.addAttribute("listInSock", khoService.getListInSock());
-        List<KhoDto> sock = khoService.getListInSock();
-        model.addAttribute("giaBanFomat", currencyFormat.format(sock.get(0).getGiaBan()));
+        Page<KhoDto> khoPage = khoService.filterProductInSockPageable(keyword, thuongHieuId, danhMucId, trangThai, page, size);
+
+        model.addAttribute("listInSock", khoPage.getContent());
+        model.addAttribute("startPage", page);
+        model.addAttribute("totalPage", khoPage.getTotalPages());
+
+        // loọc
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("thuongHieu", thuongHieuId);
+        model.addAttribute("danhMuc", danhMucId);
+        model.addAttribute("status", trangThai);
+
+
         // thương hiệu
+        model.addAttribute("listCategory", khoService.findAllCategoryInSock());
 
         // danh mục
+        model.addAttribute("listBrand", khoService.findAllBrandInSock());
+
 
         return "admin/quan-ly-kho";
 

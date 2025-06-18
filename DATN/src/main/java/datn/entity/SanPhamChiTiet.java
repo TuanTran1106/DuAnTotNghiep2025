@@ -21,7 +21,6 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     @Column(name = "mau_sac")
     private String mauSac;
 
