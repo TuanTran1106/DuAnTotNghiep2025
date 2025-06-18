@@ -110,44 +110,185 @@
                     <td th:text="${sock.mauSac}"></td>
                     <td th:text="${sock.kichThuoc}"></td>
                     <td th:text="${sock.chatLieu}"></td>
-                    <td th:text="${sock.giaBan}"></td>
+                    <td th:text="${giaBanFomat}"></td>
+
                     <td class="fw-bold text-danger" th:text="${sock.soLuong}"></td>
                     <td th:text="${sock.tenThuongHieu}"></td>
                     <td th:text="${sock.tenDanhMuc}"></td>
                 <td>
-                    <button class="btn btn-success btn-sm">+ Nhập</button>
-                    <button class="btn btn-danger btn-sm">- Xuất</button>
-                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">Sửa</button>
+                    <a href="#" class="btn btn-success btn-sm btn-nhap"
+                       th:attr="data-id=${sock.id}"
+                       data-bs-toggle="modal" data-bs-target="#enter">+ Nhập</a>
+
+                    <a href="#" class="btn btn-danger btn-sm btn-xuat"
+                       th:attr="data-id=${sock.id}"
+                       data-bs-toggle="modal" data-bs-target="#export">- Xuất</a>
+
+                    <a href="#" class="btn btn-warning btn-sm btn-sua"
+                       th:attr="data-id=${sock.id}"
+                       data-bs-toggle="modal" data-bs-target="#editModal">Sửa</a>
                 </td>
-            </tr>
-        </tbody>
+    
+                </tr>
+                <tr th:each="sock,start : ${listInSock}"
+                    class="row-click"
+                    th:attr="data-bs-toggle='modal', data-bs-target='#imageModal', data-img-url=${sock}, data-product-name=${sock.tenSanPham}">
+                </tbody>
     </table>
 </div>
 
-<!-- Modal chỉnh sửa -->
-<div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog">
-        <form>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chỉnh sửa số lượng</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- modal nhập -->
+<div class="modal fade" id="enter" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="post" th:action="@{/quan-ly/kho/nhap}" th:object="${form}" id="formNhap">
+                <input type="hidden" name="id" id="nhap-id">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nhập hàng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="form-label">Số lượng nhập</label>
+                        <input type="number" name="soLuong" class="form-control" >
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">Lưu</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <label class="form-label">Số lượng mới</label>
-                    <input type="number" class="form-control" required>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary">Lưu</button>
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                </div>
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- modal xuất -->
+<div class="modal fade" id="export" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="post" th:action="@{/quan-ly/kho/xuat}" id="formXuat">
+                <input type="hidden" name="id" id="xuat-id">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xuất hàng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="form-label">Số lượng xuất</label>
+                        <input type="number" name="soLuong" class="form-control" >
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">Lưu</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+</div>
 
+<!-- modal sửa -->
+<div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="post" th:action="@{/quan-ly/kho/sua}" id="formSua">
+                <input type="hidden" name="id" id="sua-id">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cập nhật số lượng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="form-label">Số lượng mới</label>
+                        <input type="number" name="soLuong" class="form-control">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">Lưu</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+</div>
+
+<!--nhaasn vao modal sẽ hiện ra hình ảnh sản pahamf-->
+<div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalTitle">Ảnh sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="productImage" src="" class="img-fluid" style="max-height: 500px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btn-nhap").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const id = btn.getAttribute("data-id");
+                document.getElementById("nhap-id").value = id;
+            });
+        });
+
+        document.querySelectorAll(".btn-xuat").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const id = btn.getAttribute("data-id");
+                document.getElementById("xuat-id").value = id;
+            });
+        });
+
+        document.querySelectorAll(".btn-sua").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const id = btn.getAttribute("data-id");
+                document.getElementById("sua-id").value = id;
+            });
+        });
+    });
+
+</script>
+
+<!--mở lại modal khi có lỗi     -->
+<script th:if="${modalError != null}">
+        const modalMap = {
+            'enter': 'enter',
+            'export': 'export',
+            'edit': 'editModal'
+        };
+        const modalId = modalMap[/*[[${modalError}]]*/ ''];
+        const modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
+</script>
+<!-- xử lý hieern thị hình ảnh    -->
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Gán ID cho modal hình ảnh
+            const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            const imageEl = document.getElementById("productImage");
+            const modalTitle = document.getElementById("imageModalTitle");
+
+            // Bắt sự kiện click từng dòng
+            document.querySelectorAll(".row-click").forEach(row => {
+                row.addEventListener("click", function () {
+                    const imgUrl = row.getAttribute("data-img-url");
+                    const name = row.getAttribute("data-product-name");
+
+                    imageEl.src = imgUrl || "https://via.placeholder.com/400x400?text=Không+có+ảnh";
+                    modalTitle.innerText = `Ảnh sản phẩm: ${name}`;
+                });
+            });
+
+            // Các nút nhập/xuất/sửa vẫn hoạt động bình thường
+            document.querySelectorAll(".btn-nhap, .btn-xuat, .btn-sua").forEach(btn => {
+                btn.addEventListener("click", function (event) {
+                    event.stopPropagation(); // Ngăn không cho click row
+                });
+            });
+        });
+    </script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

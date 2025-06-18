@@ -88,8 +88,6 @@ public class GioHangController {
         Files.write(path, file.getBytes());
 
         SanPhamChiTiet sp = new SanPhamChiTiet();
-        sp.setTenSanPham("Đồng hồ XYZ");
-        sp.setHinhAnh("/images/" + fileName);
         sanPhamChiTietRepo.save(sp);
         return "redirect:/sanpham/list";
     }

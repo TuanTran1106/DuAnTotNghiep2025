@@ -1,5 +1,6 @@
 package datn.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class KhoDto {
 
     private String chatLieu;
 
+    @NotNull(message = "Khong duoc phep nhat chu cai!")
     private Integer soLuong;
 
     private BigDecimal giaBan;
@@ -30,4 +32,5 @@ public class KhoDto {
     private String tenThuongHieu;
 
     private String tenDanhMuc;
+
 }

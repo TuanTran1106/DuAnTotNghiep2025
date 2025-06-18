@@ -1,6 +1,7 @@
 package datn.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,6 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "ten_san_pham")
-    private String tenSanPham;
 
     @Column(name = "mau_sac")
     private String mauSac;
@@ -32,14 +31,12 @@ public class SanPhamChiTiet {
     @Column(name = "chat_lieu")
     private String chatLieu;
 
+    @NotNull(message = "Vui lòng nhập chữ số!")
     @Column(name = "so_luong")
     private int soLuong;
 
     @Column(name = "gia_ban")
     private BigDecimal giaBan;
-
-    @Column(name = "hinh_anh")
-    private String hinhAnh;
 
     @ManyToOne
     @JoinColumn(name = "id_san_pham", referencedColumnName = "id")

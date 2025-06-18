@@ -1,9 +1,11 @@
 package datn.service;
 
 import datn.dto.KhoDto;
+import datn.entity.SanPhamChiTiet;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface KhoService {
 
@@ -19,4 +21,9 @@ public interface KhoService {
 
     List<KhoDto> getListInSock();
 
+    void enterProduct(Integer id, Integer soLuong);
+
+    void exportProduct(Integer id, Integer soLuong);
+
+    void updateQuantity(Integer id, Integer soLuong);
 }
