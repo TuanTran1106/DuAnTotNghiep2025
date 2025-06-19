@@ -23,11 +23,11 @@ public interface KhoService {
 
     Integer getTotalProductIsOut();
 
-    void enterProduct(Integer id, Integer soLuong);
+    void enterProduct(Integer id, Integer soLuong, String ghiChu);
 
-    void exportProduct(Integer id, Integer soLuong);
+    void exportProduct(Integer id, Integer soLuong, String ghiChu);
 
-    void updateQuantity(Integer id, Integer soLuong);
+    void updateQuantity(Integer id, Integer soLuong, String ghiChu);
 
     List<ThuongHieu> findAllBrandInSock();
 

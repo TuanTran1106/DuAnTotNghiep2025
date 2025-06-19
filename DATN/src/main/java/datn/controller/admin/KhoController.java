@@ -74,27 +74,34 @@ public class KhoController {
 
     @PostMapping("/nhap")
     public String enterProduct(@RequestParam("id") Integer id,
-                               @RequestParam("soLuong") Integer soLuong) {
+                               @RequestParam("soLuong") Integer soLuong,
+                               @RequestParam("ghiChuNhap") String ghiChu) {
 
-        khoService.enterProduct(id, soLuong);
+        khoService.enterProduct(id, soLuong, ghiChu);
+
         return "redirect:/quan-ly/kho";
     }
 
     @PostMapping("/xuat")
     public String exportProduct(@RequestParam("id") Integer id,
-                                @RequestParam("soLuong") Integer soLuong) {
+                                @RequestParam("soLuong") Integer soLuong,
+                                @RequestParam("ghiChuXuat") String ghiChu) {
 
-        khoService.exportProduct(id, soLuong);
+        khoService.exportProduct(id, soLuong, ghiChu);
+
         return "redirect:/quan-ly/kho";
     }
 
     @PostMapping("/sua")
     public String update(@RequestParam("id") Integer id,
-                         @RequestParam("soLuong") Integer soLuong) {
+                         @RequestParam("soLuong") Integer soLuong,
+                         @RequestParam("ghiChuUpdate") String ghiChu) {
 
-        khoService.updateQuantity(id, soLuong);
+        khoService.updateQuantity(id, soLuong, ghiChu);
+
         return "redirect:/quan-ly/kho";
     }
+
 
 
 
