@@ -22,6 +22,9 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "tenSanPham")
+    private String tenSanPham;
+
     @Column(name = "mau_sac")
     private String mauSac;
 
@@ -30,6 +33,9 @@ public class SanPhamChiTiet {
 
     @Column(name = "chat_lieu")
     private String chatLieu;
+
+    @Column(name = "hinh_anh")
+    private String hinhAnh;
 
     @NotNull(message = "Vui lòng nhập chữ số!")
     @Column(name = "so_luong")
