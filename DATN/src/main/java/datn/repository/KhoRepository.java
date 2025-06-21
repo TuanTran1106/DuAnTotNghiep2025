@@ -27,7 +27,7 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
     Integer totalProductInSock();
 
     // tổng giá trị tồn trong kho
-    @Query(value = "SELECT SUM(gia_ban*so_luong) FROM san_pham_chi_tiet" , nativeQuery = true)
+    @Query(value = "SELECT SUM(gia_nhap*so_luong) FROM san_pham JOIN san_pham_chi_tiet on san_pham.id = san_pham_chi_tiet.id" , nativeQuery = true)
     BigDecimal totalPriceInSock();
 
     // sắp hét hàng
@@ -44,6 +44,7 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
             ct.chat_lieu AS chatLieu,
             ct.so_luong AS soLuong,
             ct.gia_ban AS giaBan,
+            sp.gia_nhap AS giaNhap,
             th.ten_thuong_hieu AS tenThuongHieu,
             dm.ten_danh_muc AS tenDanhMuc
         FROM san_pham_chi_tiet ct
@@ -74,5 +75,7 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
                 @Param("trangThai") Integer trangThai,
                 Pageable pageable
         );
-}
+
+    @Query("SELECT sp FROM SanPhamChiTiet sp WHERE sp.sanPham.tenSanPham = :tenSanPham AND sp.mauSac = :mauSac AND sp.kichThuoc = :kichThuoc")
+    SanPhamChiTiet findBySanPham_TenSanPhamAndMauSacAndKichThuoc(@Param("tenSanPham") String tenSanPham, @Param("mauSac") String mauSac, @Param("kichThuoc") String kichThuoc);}
 

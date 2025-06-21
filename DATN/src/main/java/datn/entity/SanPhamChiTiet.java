@@ -38,17 +38,6 @@ public class SanPhamChiTiet {
     @Column(name = "gia_ban")
     private BigDecimal giaBan;
 
-    @Column(name = "ngay_nhap")
-    private LocalDate ngayNhap;
-
-    @Column(name = "ngay_xuat")
-    private LocalDate ngayXuat;
-
-    @Column(name = "ghi_chu")
-    private String ghiChu;
-
-    @Column(name = "ngay_update")
-    private LocalDate ngayUpdate;
 
     @ManyToOne
     @JoinColumn(name = "id_san_pham", referencedColumnName = "id")

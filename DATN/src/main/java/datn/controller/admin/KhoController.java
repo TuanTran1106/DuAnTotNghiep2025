@@ -2,15 +2,17 @@ package datn.controller.admin;
 
 import datn.dto.KhoDto;
 import datn.service.KhoService;
+import datn.service.LichSuKhoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -20,15 +22,16 @@ public class KhoController {
 
     private final KhoService khoService;
 
+    private final LichSuKhoService lichSuKhoService;
 
     @GetMapping("")
-    public String home (@RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "2") int size,
-                        @RequestParam(value = "keyword", required = false) String keyword,
-                        @RequestParam(value = "thuongHieu", required = false) Integer thuongHieuId,
-                        @RequestParam(value = "danhMuc", required = false) Integer danhMucId,
-                        @RequestParam(value = "status", required = false) Integer trangThai,
-                        Model model) {
+    public String home(@RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "3") int size,
+                       @RequestParam(value = "keyword", required = false) String keyword,
+                       @RequestParam(value = "thuongHieu", required = false) Integer thuongHieuId,
+                       @RequestParam(value = "danhMuc", required = false) Integer danhMucId,
+                       @RequestParam(value = "status", required = false) Integer trangThai,
+                       Model model) {
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
@@ -67,17 +70,29 @@ public class KhoController {
         // danh mục
         model.addAttribute("listBrand", khoService.findAllBrandInSock());
 
+        //ls kho
+        model.addAttribute("listHistoryInSock", lichSuKhoService.findAllHistoryInSock());
 
         return "admin/quan-ly-kho";
 
     }
 
+
     @PostMapping("/nhap")
     public String enterProduct(@RequestParam("id") Integer id,
                                @RequestParam("soLuong") Integer soLuong,
-                               @RequestParam("ghiChuNhap") String ghiChu) {
+                               @RequestParam("ghiChuNhap") String ghiChu,
+                               RedirectAttributes redirectAttributes) {
 
-        khoService.enterProduct(id, soLuong, ghiChu);
+        try {
+            khoService.enterProduct(id, soLuong, ghiChu);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Nhập hàng thành công!");
+
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
 
         return "redirect:/quan-ly/kho";
     }
@@ -85,25 +100,50 @@ public class KhoController {
     @PostMapping("/xuat")
     public String exportProduct(@RequestParam("id") Integer id,
                                 @RequestParam("soLuong") Integer soLuong,
-                                @RequestParam("ghiChuXuat") String ghiChu) {
+                                @RequestParam("ghiChuXuat") String ghiChu,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            khoService.exportProduct(id, soLuong, ghiChu);
 
-        khoService.exportProduct(id, soLuong, ghiChu);
+            redirectAttributes.addFlashAttribute("successMessage", "Xuất hàng thành công!");
 
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/quan-ly/kho";
     }
+
 
     @PostMapping("/sua")
     public String update(@RequestParam("id") Integer id,
                          @RequestParam("soLuong") Integer soLuong,
-                         @RequestParam("ghiChuUpdate") String ghiChu) {
+                         @RequestParam("ghiChuUpdate") String ghiChu,
+                         RedirectAttributes redirectAttributes) {
 
-        khoService.updateQuantity(id, soLuong, ghiChu);
+        try {
+            khoService.updateQuantity(id, soLuong, ghiChu);
+
+
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật số lượng mới thành công!");
+
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
 
         return "redirect:/quan-ly/kho";
     }
 
 
+    @PostMapping("/import")
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
 
+        khoService.importFromExcel(file);
+
+        return "redirect:/quan-ly/kho";
+    }
 
 
 }
