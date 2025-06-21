@@ -258,7 +258,7 @@
                 </div>
             </div>
 
-            <!-- Summary Cards -->
+            <!-- header -->
             <div class="row g-4 mb-6">
                 <div class="col-md-3">
                     <div class="card p-4">
@@ -286,7 +286,7 @@
                 </div>
             </div>
 
-            <!-- Filter Form -->
+            <!-- filter -->
             <div class="table-container mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Danh Sách Tồn Kho</h3>
                 <form class="row g-3 align-items-end">
@@ -323,7 +323,7 @@
                 </form>
             </div>
 
-            <!-- Inventory Table -->
+            <!-- conttent table -->
             <div class="table-container" id="table-container">
                 <div class="loading-overlay" id="loading-overlay">
                     <div class="loading-spinner"></div>
@@ -371,7 +371,7 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
+                <!-- phân trang -->
                 <nav class="mt-4">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
@@ -387,7 +387,7 @@
                 </nav>
             </div>
 
-            <!-- Modal Nhập Hàng -->
+            <!--modal nhập hàng -->
             <div class="modal fade" id="enter" tabindex="-1">
                 <div class="modal-dialog">
                     <form method="post" th:action="@{/quan-ly/kho/nhap}" th:object="${form}" id="formNhap">
@@ -417,7 +417,7 @@
                 </div>
             </div>
 
-            <!-- Modal Xuất Hàng -->
+            <!-- modalxuaasts hang -->
             <div class="modal fade" id="export" tabindex="-1">
                 <div class="modal-dialog">
                     <form method="post" th:action="@{/quan-ly/kho/xuat}" id="formXuat">
@@ -447,7 +447,7 @@
                 </div>
             </div>
 
-            <!-- Modal Cập Nhật Số Lượng -->
+            <!-- modal cập nhật s lượng -->
             <div class="modal fade" id="editModal" tabindex="-1">
                 <div class="modal-dialog">
                     <form method="post" th:action="@{/quan-ly/kho/sua}" id="formSua">
@@ -477,7 +477,7 @@
                 </div>
             </div>
 
-            <!-- Modal Lịch Sử -->
+            <!-- modal lịch sử -->
             <div class="modal fade" id="historyModal" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <input type="hidden" name="id" id="lich-su-id">
@@ -521,7 +521,7 @@
                 </div>
             </div>
 
-            <!-- Modal Import Excel -->
+            <!-- modal import excel -->
             <div class="modal fade" id="importModal" tabindex="-1">
                 <div class="modal-dialog">
                     <form method="post" enctype="multipart/form-data" th:action="@{/quan-ly/kho/import}">
@@ -532,7 +532,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating">
-                                    <input style="font-size: 14px" type="file" class="form-control" name="file" accept=".xlsx,.xls" required>
+                                    <input style="font-size: 14px" type="file" class="form-control" name="file" accept=".xlsx,.xls" >
                                     <label style="font-size: 14px">Chọn file Excel <span class="text-danger">*</span></label>
                                 </div>
                             </div>
@@ -545,7 +545,7 @@
                 </div>
             </div>
 
-            <!-- Modal Thêm Sản Phẩm -->
+            <!-- modal thêm sản phâm -->
             <div class="modal fade" id="addProductModal" tabindex="-1">
                 <div class="modal-dialog">
                     <form method="post" th:action="@{/quan-ly/kho/them}" id="formThem">
@@ -603,7 +603,7 @@
                 </div>
             </div>
 
-            <!-- Modal Thông Báo -->
+            <!-- Modal thông báo -->
             <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content border-0 rounded shadow-sm">
@@ -621,9 +621,16 @@
                 </div>
             </div>
 
-            <!-- Toast Notifications -->
-            <div th:if="${successMessage}" class="custom-toast toast-success" id="toastSuccess" th:text="${successMessage}"></div>
-            <div th:if="${errorMessage}" class="custom-toast toast-error" id="toastError" th:text="${errorMessage}"></div>
+            <!--thong báo lỗi -->
+            <div th:if="${successMessage}" class="custom-toast toast-success" id="toastSuccess">
+                <i class="fas fa-check-circle toast-icon"></i>
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <div th:if="${errorMessage}" class="custom-toast toast-error" id="toastError">
+                <i class="fas fa-exclamation-circle toast-icon"></i>
+                <span th:text="${errorMessage}"></span>
+            </div>
         </div>
     </div>
 </div>
@@ -892,7 +899,14 @@
         });
 
         reinitializeEvents();
+
+
+        // cảnh báo hàng ắp hết và gửi mail
+
+
+
     });
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

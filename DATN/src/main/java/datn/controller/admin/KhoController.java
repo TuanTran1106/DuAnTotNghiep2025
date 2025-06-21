@@ -5,6 +5,8 @@ import datn.service.KhoService;
 import datn.service.LichSuKhoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/quan-ly/kho")
@@ -23,6 +27,7 @@ public class KhoController {
     private final KhoService khoService;
 
     private final LichSuKhoService lichSuKhoService;
+
 
     @GetMapping("")
     public String home(@RequestParam(defaultValue = "0") int page,
@@ -138,12 +143,41 @@ public class KhoController {
 
 
     @PostMapping("/import")
-    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+    public String importExcel(@RequestParam("file") MultipartFile file,
+                              RedirectAttributes redirectAttributes) {
 
-        khoService.importFromExcel(file);
+        try {
+            // validateion
+            if (file.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng chọn file để import!");
+                return "redirect:/quan-ly/kho";
+            }
+
+            // chec đinh dạng p=fial
+            String fileName = file.getOriginalFilename();
+            if (fileName == null || (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls"))) {
+                redirectAttributes.addFlashAttribute("errorMessage", "File phải có định dạng Excel (.xlsx hoặc .xls)!");
+                return "redirect:/quan-ly/kho";
+            }
+
+            // check file nếu quá lơn
+            if (file.getSize() > 10 * 1024 * 1024) {
+                redirectAttributes.addFlashAttribute("errorMessage", "File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.");
+                return "redirect:/quan-ly/kho";
+            }
+
+            // Import data
+            khoService.importFromExcel(file);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Import dữ liệu thành công!");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi import: " + e.getMessage());
+        }
 
         return "redirect:/quan-ly/kho";
     }
+
 
 
 }

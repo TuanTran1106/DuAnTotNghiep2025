@@ -1,11 +1,14 @@
 package datn.service.impl;
 
 import datn.entity.LichSuKho;
+import datn.entity.SanPhamChiTiet;
 import datn.repository.LichSuKhoRepository;
+import datn.service.KhoService;
 import datn.service.LichSuKhoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,4 +21,5 @@ public class LichSuKhoServiceImpl implements LichSuKhoService {
     public List<LichSuKho> findAllHistoryInSock() {
         return lichSuKhoRepository.findAll();
     }
+
 }

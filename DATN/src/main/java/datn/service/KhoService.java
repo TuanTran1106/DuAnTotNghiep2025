@@ -14,6 +14,7 @@ import java.util.Optional;
 
 public interface KhoService {
 
+
     // lất tổng sản phẩm
     Integer getTotalProduct();
 
@@ -37,4 +38,5 @@ public interface KhoService {
     Page<KhoDto> filterProductInSockPageable(String keyword, Integer thuongHieuId, Integer danhMucId, Integer trangThai,int page, int size);
 
     void importFromExcel(MultipartFile file);
+
 }
