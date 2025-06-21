@@ -2,6 +2,7 @@ package datn.service.impl;
 
 import datn.dto.KhoDto;
 import datn.entity.DanhMuc;
+import datn.entity.SanPham;
 import datn.entity.SanPhamChiTiet;
 import datn.entity.ThuongHieu;
 import datn.repository.DanhMucRepository;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,30 +55,49 @@ public class KhoServiceImpl implements KhoService {
 
     @Override
     @Transactional
-    public void enterProduct(Integer id, Integer soLuong) {
+    public void enterProduct(Integer id, Integer soLuong, String ghiChu) {
 
         SanPhamChiTiet sp = khoRepository.findById(id).orElseThrow();
         sp.setSoLuong(sp.getSoLuong() + soLuong);
+
+        sp.setGhiChu(ghiChu);
+        LocalDate today = LocalDate.now();
+        sp.setNgayNhap(today);
+
         khoRepository.save(sp);
     }
+
 
     @Override
     @Transactional
-    public void exportProduct(Integer id, Integer soLuong) {
+    public void exportProduct(Integer id, Integer soLuong, String ghiChu) {
 
         SanPhamChiTiet sp = khoRepository.findById(id).orElseThrow();
-        int newQuantity = sp.getSoLuong() - soLuong;
-        sp.setSoLuong(newQuantity);
+        sp.setSoLuong(sp.getSoLuong() - soLuong);
+
+        sp.setGhiChu(ghiChu);
+        LocalDate today = LocalDate.now();
+        sp.setNgayXuat(today);
+        sp.setNgayNhap(sp.getNgayNhap());
         khoRepository.save(sp);
     }
 
+
     @Override
-    public void updateQuantity(Integer id, Integer soLuong) {
+    public void updateQuantity(Integer id, Integer soLuong, String ghiChu) {
 
         SanPhamChiTiet sp = khoRepository.findById(id).orElseThrow();
         sp.setSoLuong(soLuong);
+
+        sp.setGhiChu(ghiChu);
+        LocalDate today = LocalDate.now();
+        sp.setNgayXuat(sp.getNgayXuat());
+        sp.setNgayNhap(sp.getNgayNhap());
+        sp.setNgayUpdate(today);
+
         khoRepository.save(sp);
     }
+
 
     @Override
     public List<ThuongHieu> findAllBrandInSock() {
