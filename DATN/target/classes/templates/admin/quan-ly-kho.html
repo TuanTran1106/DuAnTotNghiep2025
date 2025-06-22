@@ -709,26 +709,30 @@
 
             <!-- modal xác nhận xóa-->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content border-0 rounded shadow-sm">
-                        <div class="modal-header bg-white border-bottom">
-                            <h5 class="modal-title text-dark fw-semibold" id="deleteModalLabel">Xác nhận xóa sản phẩm</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header bg-white border-bottom-0">
+                            <h5 class="modal-title fw-semibold text-dark" id="deleteModalLabel">Xác nhận xóa sản phẩm</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                         </div>
-                        <div class="modal-body">
-                            Bạn có chắc chắn muốn xóa sản phẩm này không? Hành động này không thể hoàn tác.
+                        <div class="modal-body text-center px-4">
+                            <p class="mb-0 text-secondary">
+                                Bạn có chắc chắn muốn xóa sản phẩm này không?
+                                <br>
+                                <small class="text-muted">Hành động này không thể hoàn tác.</small>
+                            </p>
                         </div>
-                        <div class="modal-footer bg-light border-top">
-                            <form id="deleteForm" th:action="@{/quan-ly/kho/xoa}" method="post">
+                        <div class="modal-footer bg-light border-top-0 justify-content-center">
+                            <form id="deleteForm" th:action="@{/quan-ly/kho/xoa}" method="post" class="d-inline">
                                 <input type="hidden" id="xoa-id" name="id">
                                 <button type="submit" class="btn btn-primary btn-sm">Xóa</button>
                             </form>
-                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" data-bs-dismiss="modal">Hủy</button>
                         </div>
                     </div>
                 </div>
             </div>
-
+            
         </div>
     </div>
 </div>

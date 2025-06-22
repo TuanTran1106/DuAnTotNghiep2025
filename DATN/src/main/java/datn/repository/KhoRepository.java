@@ -44,7 +44,8 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
             sp.gia_nhap AS giaNhap,
             th.ten_thuong_hieu AS tenThuongHieu,
             dm.ten_danh_muc AS tenDanhMuc,
-            ct.trang_thai AS trangThai
+            ct.trang_thai AS trangThai,
+            sp.hinh_anh as hinhAnh
         FROM san_pham_chi_tiet ct
         JOIN san_pham sp ON ct.id_san_pham = sp.id
         LEFT JOIN thuong_hieu th ON sp.id_thuong_hieu = th.id
@@ -76,6 +77,6 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
     @Query("SELECT sp FROM SanPhamChiTiet sp WHERE sp.sanPham.tenSanPham = :tenSanPham AND sp.mauSac = :mauSac AND sp.kichThuoc = :kichThuoc")
     SanPhamChiTiet findBySanPham_TenSanPhamAndMauSacAndKichThuoc(@Param("tenSanPham") String tenSanPham, @Param("mauSac") String mauSac, @Param("kichThuoc") String kichThuoc);
 
-    Collection<Object> findBySoLuongLessThanEqual(int lowStockThreshold);
+//    Collection<Object> findBySoLuongLessThanEqual(int lowStockThreshold);
 }
 

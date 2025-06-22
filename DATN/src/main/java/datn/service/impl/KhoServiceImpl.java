@@ -290,7 +290,7 @@ public class KhoServiceImpl implements KhoService {
                             sanPham.setTenSanPham(tenSp);
                             sanPham.setGiaNhap(BigDecimal.valueOf(giaNhap));
                             sanPham.setNgayNhap(LocalDate.now());
-                            sanPham.setTrangThai(true);
+                            sanPham.setTrangThai(1);
 
                             ThuongHieu thuongHieu = thuongHieuRepository.findByTenThuongHieu(tenThuongHieu);
                             if (thuongHieu == null) {

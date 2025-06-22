@@ -37,4 +37,6 @@ public class KhoDto {
 
     private int trangThai;
 
+    private String hinhAnh;
+
 }
