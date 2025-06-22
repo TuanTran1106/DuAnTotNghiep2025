@@ -49,4 +49,8 @@ public class NguoiDung {
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private PhanQuyen phanQuyen;
 
+    public NguoiDung(int id) {
+        this.id = id;
+    }
+
 }

@@ -22,9 +22,6 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "tenSanPham")
-    private String tenSanPham;
-
     @Column(name = "mau_sac")
     private String mauSac;
 
@@ -34,8 +31,6 @@ public class SanPhamChiTiet {
     @Column(name = "chat_lieu")
     private String chatLieu;
 
-    @Column(name = "hinh_anh")
-    private String hinhAnh;
 
     @NotNull(message = "Vui lòng nhập chữ số!")
     @Column(name = "so_luong")
@@ -49,9 +44,6 @@ public class SanPhamChiTiet {
 
     @Column(name = "ngay_xuat")
     private LocalDate ngayXuat;
-
-    @Column(name = "ghi_chu")
-    private String ghiChu;
 
     @Column(name = "ngay_update")
     private LocalDate ngayUpdate;

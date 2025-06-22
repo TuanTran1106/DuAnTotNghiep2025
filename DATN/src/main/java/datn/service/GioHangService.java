@@ -2,7 +2,18 @@ package datn.service;
 
 import datn.entity.GioHang;
 import datn.entity.NguoiDung;
+import datn.entity.SanPhamChiTiet;
+
+import java.util.List;
 
 public interface GioHangService {
-    GioHang layHoacTaoGioHang(NguoiDung nguoiDung);
+    List<GioHang> layGioHangTheoNguoiDung(int nguoiDungId);
+
+    void themSanPhamVaoGio(int nguoiDungId, int idSanPhamChiTiet);
+
+    void tangSoLuong(int gioHangId);
+
+    void giamSoLuong(int gioHangId);
+
+    void xoaSanPham(int gioHangId);
 }
