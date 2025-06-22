@@ -2,6 +2,7 @@ package datn.service;
 
 import datn.dto.KhoDto;
 import datn.entity.DanhMuc;
+import datn.entity.SanPham;
 import datn.entity.SanPhamChiTiet;
 import datn.entity.ThuongHieu;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface KhoService {
-
 
     // lất tổng sản phẩm
     Integer getTotalProduct();
@@ -41,4 +41,5 @@ public interface KhoService {
 
     void importFromExcel(MultipartFile file);
 
+    void addNewProduct(SanPham sanPham, SanPhamChiTiet sanPhamChiTiet);
 }

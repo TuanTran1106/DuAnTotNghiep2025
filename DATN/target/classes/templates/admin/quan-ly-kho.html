@@ -221,7 +221,7 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             opacity: 0;
             transform: translateY(-20px);
-            animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 2s forwards;
+            animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 5s forwards;
         }
 
         .toast-success {
@@ -257,6 +257,204 @@
         .no-data i {
             opacity: 0.6;
             vertical-align: middle;
+        }
+
+
+        .table-container {
+            position: relative;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .table-container {
+            position: relative;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .bg-red-50 {
+            background-color: #fef2f2;
+        }
+
+        .text-red-600 {
+            color: #dc2626;
+        }
+
+        .no-data {
+            color: #6b7280;
+        }
+
+        /* Styles cho hình ảnh sản phẩm */
+        .product-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Modal phóng to hình ảnh */
+        .image-modal {
+            z-index: 1060;
+        }
+
+        .image-modal .modal-dialog {
+            max-width: 90vw;
+            width: auto;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 4rem);
+        }
+
+        .image-modal .modal-content {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            width: auto;
+            max-width: none;
+        }
+
+        .image-modal .modal-body {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoomed-image {
+            max-width: 85vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            object-fit: contain;
+        }
+
+        .close-zoom {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .close-zoom:hover {
+            background: #dc3545;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .image-info {
+            background: #1e3a8a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: inline-block;
+            max-width: 85vw;
+            word-wrap: break-word;
+        }
+
+        /* Responsive cho mobile */
+        @media (max-width: 768px) {
+            .image-modal .modal-dialog {
+                margin: 1rem;
+                min-height: calc(100vh - 2rem);
+            }
+
+            .zoomed-image {
+                max-width: 95vw;
+                max-height: 70vh;
+            }
+
+            .image-info {
+                max-width: 95vw;
+                font-size: 14px;
+            }
+
+            .close-zoom {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+        }
+
+        .modal-backdrop.show {
+            opacity: 0.8;
         }
 
     </style>
@@ -362,6 +560,7 @@
                             <th>Số Lượng Tồn</th>
                             <th>Thương Hiệu</th>
                             <th>Danh Mục</th>
+                            <th>Hình ảnh</th>
                             <th>Thao Tác</th>
                         </tr>
                         </thead>
@@ -386,6 +585,14 @@
                                 th:text="${sock.soLuong}"></td>
                             <td th:text="${sock.tenThuongHieu}"></td>
                             <td th:text="${sock.tenDanhMuc}"></td>
+                            <td>
+                                <img th:src="@{'/images/' + ${sock.hinhAnh}}"
+                                     alt="Hình ảnh"
+                                     width="60"
+                                     height="60"
+                                     class="product-image"
+                                     onclick="openImageModal(this)">
+                            </td>
                             <td class="d-flex gap-2 justify-content-center">
                                 <a class="text-primary btn-nhap" href="#" th:attr="data-id=${sock.id}" title="Nhập hàng"
                                    data-bs-placement="top" data-bs-toggle="modal" data-bs-target="#enter">
@@ -613,62 +820,100 @@
 
             <!-- modal thêm sản phâm -->
             <div class="modal fade" id="addProductModal" tabindex="-1">
-                <div class="modal-dialog">
-                    <form method="post" th:action="@{/quan-ly/kho/them}" id="formThem">
+                <div class="modal-dialog modal-lg">
+                    <form method="post" th:action="@{/quan-ly/kho/them}" id="formThem" enctype="multipart/form-data">
                         <div class="modal-content border-0 rounded shadow-sm">
                             <div class="modal-header bg-white border-bottom">
-                                <h5 class="modal-title text-dark fw-semibold">Thêm Sản Phẩm</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Đóng"></button>
+                                <h5 class="modal-title text-dark fw-semibold">Thêm Sản Phẩm Mới</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="tenSanPham" name="tenSanPham" required>
-                                    <label for="tenSanPham">Tên sản phẩm <span class="text-danger">*</span></label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="tenSanPham" name="tenSanPham" required>
+                                            <label for="tenSanPham">Tên sản phẩm <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <select style="font-size: 14px" class="form-select" id="thuongHieu" name="thuongHieu" required>
+                                                <option style="font-size: 14px" value="">-- Chọn thương hiệu --</option>
+                                                <option style="font-size: 14px" th:each="brand : ${listBrand}"
+                                                        th:value="${brand.id}" th:text="${brand.tenThuongHieu}"></option>
+                                            </select>
+                                            <label for="thuongHieu">Thương hiệu <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <select style="font-size: 14px" class="form-select" id="thuongHieu"
-                                            name="thuongHieu" required>
-                                        <option style="font-size: 14px" value="">-- Chọn thương hiệu --</option>
-                                        <option style="font-size: 14px" th:each="brand : ${listBrand}"
-                                                th:value="${brand.id}" th:text="${brand.tenThuongHieu}"></option>
-                                    </select>
-                                    <label for="thuongHieu">Thương hiệu <span class="text-danger">*</span></label>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <select style="font-size: 14px" class="form-select" id="danhMuc" name="danhMuc" required>
+                                                <option style="font-size: 14px" value="">-- Chọn danh mục --</option>
+                                                <option style="font-size: 14px" th:each="dm : ${listCategory}"
+                                                        th:value="${dm.id}" th:text="${dm.tenDanhMuc}"></option>
+                                            </select>
+                                            <label for="danhMuc">Danh mục <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="mauSac" name="mauSac" required>
+                                            <label for="mauSac">Màu sắc <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <select style="font-size: 14px" class="form-select" id="danhMuc" name="danhMuc"
-                                            required>
-                                        <option style="font-size: 14px" value="">-- Chọn danh mục --</option>
-                                        <option style="font-size: 14px" th:each="dm : ${listCategory}"
-                                                th:value="${dm.id}" th:text="${dm.tenDanhMuc}"></option>
-                                    </select>
-                                    <label for="danhMuc">Danh mục <span class="text-danger">*</span></label>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="kichThuoc" name="kichThuoc" required>
+                                            <label for="kichThuoc">Kích thước <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="chatLieu" name="chatLieu" required>
+                                            <label for="chatLieu">Chất liệu <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="mauSac" name="mauSac" required>
-                                    <label for="mauSac">Màu sắc <span class="text-danger">*</span></label>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" step="0.01" class="form-control" id="giaNhap" name="giaNhap"
+                                                   min="0" required>
+                                            <label for="giaNhap">Giá nhập (VNĐ) <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="soLuong" name="soLuong"
+                                                   min="1" required>
+                                            <label for="soLuong">Số lượng <span class="text-danger">*</span></label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="kichThuoc" name="kichThuoc" required>
-                                    <label for="kichThuoc">Kích thước <span class="text-danger">*</span></label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="chatLieu" name="chatLieu" required>
-                                    <label for="chatLieu">Chất liệu <span class="text-danger">*</span></label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="giaNhap" name="giaBan" min="0" required>
-                                    <label for="giaNhap">Giá nhập <span class="text-danger">*</span></label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="soLuong" name="soLuong" min="0"
-                                           required>
-                                    <label for="soLuong">Số lượng <span class="text-danger">*</span></label>
+
+                                <div class="mb-3">
+                                    <label for="hinhAnh" class="form-label">Hình ảnh sản phẩm</label>
+                                    <input type="file" class="form-control" id="hinhAnh" name="hinhAnh"
+                                           accept="image/*" onchange="previewImage(this)">
+                                    <div class="form-text">Chỉ chấp nhận file hình ảnh (JPG, PNG, GIF). Tối đa 5MB.</div>
+                                    <div id="imagePreview" class="mt-2" style="display: none;">
+                                        <img id="preview" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light border-top">
-                                <button type="submit" class="btn btn-primary">Lưu</button>
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Lưu sản phẩm
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i>Hủy
                                 </button>
                             </div>
                         </div>
@@ -697,6 +942,23 @@
                 </div>
             </div>
 
+<!--        modal phóng to anh?-->
+            <div class="modal fade image-modal" id="imageModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <button type="button" class="close-zoom" onclick="closeImageModal()">
+                                <i class="bi bi-x"></i>
+                            </button>
+                            <img id="zoomedImage" src="" alt="" class="zoomed-image">
+                            <div class="image-info">
+                                <span id="productInfo"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!--thong báo lỗi -->
             <div th:if="${successMessage}" class="custom-toast toast-success" id="toastSuccess">
                 <i class="fas fa-check-circle toast-icon"></i>
@@ -708,11 +970,13 @@
             </div>
 
             <!-- modal xác nhận xóa-->
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content border-0 rounded shadow-sm">
                         <div class="modal-header bg-white border-bottom-0">
-                            <h5 class="modal-title fw-semibold text-dark" id="deleteModalLabel">Xác nhận xóa sản phẩm</h5>
+                            <h5 class="modal-title fw-semibold text-dark" id="deleteModalLabel">Xác nhận xóa sản
+                                phẩm</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                         </div>
                         <div class="modal-body text-center px-4">
@@ -727,34 +991,23 @@
                                 <input type="hidden" id="xoa-id" name="id">
                                 <button type="submit" class="btn btn-primary btn-sm">Xóa</button>
                             </form>
-                            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" data-bs-dismiss="modal">
+                                Hủy
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>
 </body>
 
-
+<!--scrip tổng-->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        // thông báo lỗi
-        window.addEventListener('DOMContentLoaded', () => {
-            const successAlert = document.getElementById('successAlert');
-            const errorAlert = document.getElementById('errorAlert');
-
-            if (successAlert) {
-                setTimeout(() => successAlert.style.display = 'none', 5000);
-            }
-
-            if (errorAlert) {
-                setTimeout(() => errorAlert.style.display = 'none', 5000);
-            }
-        });
 
         // mở form
         document.querySelectorAll(".btn-nhap").forEach(btn => {
@@ -1021,6 +1274,129 @@
 
     });
 
+</script>
+
+
+<!--phoóng to ảnh-->
+<script>
+    let imageModal;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+    });
+
+    function openImageModal(imgElement) {
+        const zoomedImage = document.getElementById('zoomedImage');
+        const productInfo = document.getElementById('productInfo');
+        const imageSrc = imgElement.src;
+        const productName = imgElement.getAttribute('data-product-name');
+        const altText = imgElement.alt;
+        zoomedImage.src = imageSrc;
+        zoomedImage.alt = altText;
+        productInfo.textContent = productName || altText || 'Sản phẩm';
+
+        imageModal.show();
+    }
+
+    function closeImageModal() {
+        imageModal.hide();
+    }
+    document.getElementById('imageModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeImageModal();
+        }
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && imageModal._isShown) {
+            closeImageModal();
+        }
+    });
+    document.querySelectorAll('.product-image').forEach(img => {
+        img.addEventListener('error', function() {
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEg0MFY0MEgyMFYyMFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHN0eWxlPi5jbGFzcyB7IGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxMnB4OyBmaWxsOiAjNkI3MjgwOyB9PC9zdHlsZT4KPHR4dCB4PSIzMCIgeT0iMzUiIGNsYXNzPSJjbGFzcyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Tm8gSW1hZ2U8L3R4dD4KPC9zdmc+';
+            this.alt = 'Không thể tải hình ảnh';
+        });
+    });
+</script>
+
+
+<!--add sả phẩm-->
+<script>
+    function previewImage(input) {
+        const preview = document.getElementById('preview');
+        const imagePreview = document.getElementById('imagePreview');
+
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File quá lớn! Vui lòng chọn file nhỏ hơn 5MB.');
+                input.value = '';
+                imagePreview.style.display = 'none';
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Vui lòng chọn file hình ảnh!');
+                input.value = '';
+                imagePreview.style.display = 'none';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none';
+        }
+    }
+
+    // Form validation
+    document.getElementById('formThem').addEventListener('submit', function(e) {
+        const requiredFields = ['tenSanPham', 'thuongHieu', 'danhMuc', 'mauSac', 'kichThuoc', 'chatLieu', 'giaNhap', 'soLuong'];
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field);
+            if (!input.value.trim()) {
+                input.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        // Validate price
+        const giaNhap = document.getElementById('giaNhap');
+        if (parseFloat(giaNhap.value) <= 0) {
+            giaNhap.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        // Validate quantity
+        const soLuong = document.getElementById('soLuong');
+        if (parseInt(soLuong.value) <= 0) {
+            soLuong.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+        }
+    });
+
+    // Reset form when modal closes
+    $('#addProductModal').on('hidden.bs.modal', function () {
+        document.getElementById('formThem').reset();
+        document.getElementById('imagePreview').style.display = 'none';
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
