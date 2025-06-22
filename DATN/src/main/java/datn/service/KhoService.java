@@ -31,11 +31,13 @@ public interface KhoService {
 
     void updateQuantity(Integer id, Integer soLuong, String ghiChu);
 
+    void deleteProductInSock(Integer id);
+
     List<ThuongHieu> findAllBrandInSock();
 
     List<DanhMuc> findAllCategoryInSock();
 
-    Page<KhoDto> filterProductInSockPageable(String keyword, Integer thuongHieuId, Integer danhMucId, Integer trangThai,int page, int size);
+    Page<KhoDto> filterProductInSockPageable(String keyword, Integer thuongHieuId, Integer danhMucId,int page, int size);
 
     void importFromExcel(MultipartFile file);
 

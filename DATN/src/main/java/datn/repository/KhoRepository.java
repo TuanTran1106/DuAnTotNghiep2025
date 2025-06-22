@@ -1,8 +1,6 @@
 package datn.repository;
 
 import datn.dto.KhoDto;
-import datn.entity.NguoiDung;
-import datn.entity.SanPham;
 import datn.entity.SanPhamChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
@@ -24,15 +20,15 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
     Integer totalProduct();
 
     // ổng sản phẩm tồn kho
-    @Query(value = "SELECT SUM(so_luong)  FROM san_pham_chi_tiet", nativeQuery = true)
+    @Query(value = "SELECT SUM(so_luong)  FROM san_pham_chi_tiet where trang_thai = 1", nativeQuery = true)
     Integer totalProductInSock();
 
     // tổng giá trị tồn trong kho
-    @Query(value = "SELECT SUM(sp.gia_nhap * ct.so_luong) FROM san_pham sp JOIN san_pham_chi_tiet ct ON sp.id = ct.id_san_pham", nativeQuery = true)
+    @Query(value = "SELECT SUM(sp.gia_nhap * ct.so_luong) FROM san_pham sp JOIN san_pham_chi_tiet ct ON sp.id = ct.id_san_pham where ct.trang_thai = 1", nativeQuery = true)
     BigDecimal totalPriceInSock();;
 
     // sắp hét hàng
-    @Query(value = "SELECT COUNT(so_luong) FROM san_pham_chi_tiet WHERE so_luong <=3" , nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM san_pham_chi_tiet WHERE so_luong <= 3 AND trang_thai = 1", nativeQuery = true)
     Integer totalProductIsOut();
 
     // ds kho
@@ -47,7 +43,8 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
             ct.gia_ban AS giaBan,
             sp.gia_nhap AS giaNhap,
             th.ten_thuong_hieu AS tenThuongHieu,
-            dm.ten_danh_muc AS tenDanhMuc
+            dm.ten_danh_muc AS tenDanhMuc,
+            ct.trang_thai AS trangThai
         FROM san_pham_chi_tiet ct
         JOIN san_pham sp ON ct.id_san_pham = sp.id
         LEFT JOIN thuong_hieu th ON sp.id_thuong_hieu = th.id
@@ -55,7 +52,7 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
         WHERE (:keyword IS NULL OR sp.ten_san_pham LIKE %:keyword%)
           AND (:thuongHieuId IS NULL OR th.id = :thuongHieuId)
           AND (:danhMucId IS NULL OR dm.id = :danhMucId)
-          AND (:trangThai IS NULL OR sp.trang_thai = :trangThai)
+          AND ct.trang_thai = 1
         """,
                 countQuery = """
         SELECT COUNT(*)
@@ -66,14 +63,13 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
         WHERE (:keyword IS NULL OR sp.ten_san_pham LIKE %:keyword%)
           AND (:thuongHieuId IS NULL OR th.id = :thuongHieuId)
           AND (:danhMucId IS NULL OR dm.id = :danhMucId)
-          AND (:trangThai IS NULL OR sp.trang_thai = :trangThai)
+          AND ct.trang_thai = 1
         """,
                 nativeQuery = true)
         Page<KhoDto> filterWithPaging(
                 @Param("keyword") String keyword,
                 @Param("thuongHieuId") Integer thuongHieuId,
                 @Param("danhMucId") Integer danhMucId,
-                @Param("trangThai") Integer trangThai,
                 Pageable pageable
         );
 

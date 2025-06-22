@@ -35,4 +35,6 @@ public class KhoDto {
 
     private String tenDanhMuc;
 
+    private int trangThai;
+
 }

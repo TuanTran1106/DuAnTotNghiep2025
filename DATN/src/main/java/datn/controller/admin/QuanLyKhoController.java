@@ -5,8 +5,6 @@ import datn.service.KhoService;
 import datn.service.LichSuKhoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +13,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/quan-ly/kho")
 @AllArgsConstructor
-public class KhoController {
+public class QuanLyKhoController {
 
     private final KhoService khoService;
 
@@ -56,7 +52,7 @@ public class KhoController {
         model.addAttribute("totalProductIsOut", khoService.getTotalProductIsOut());
 
         // ds tồn kho
-        Page<KhoDto> khoPage = khoService.filterProductInSockPageable(keyword, thuongHieuId, danhMucId, trangThai, page, size);
+        Page<KhoDto> khoPage = khoService.filterProductInSockPageable(keyword, thuongHieuId, danhMucId, page, size);
 
         model.addAttribute("listInSock", khoPage.getContent());
         model.addAttribute("startPage", page);
@@ -66,8 +62,6 @@ public class KhoController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("thuongHieu", thuongHieuId);
         model.addAttribute("danhMuc", danhMucId);
-        model.addAttribute("status", trangThai);
-
 
         // thương hiệu
         model.addAttribute("listCategory", khoService.findAllCategoryInSock());
@@ -128,8 +122,6 @@ public class KhoController {
 
         try {
             khoService.updateQuantity(id, soLuong, ghiChu);
-
-
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật số lượng mới thành công!");
 
         } catch (IllegalArgumentException e) {
@@ -137,47 +129,55 @@ public class KhoController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
 
-
         return "redirect:/quan-ly/kho";
     }
 
 
-    @PostMapping("/import")
-    public String importExcel(@RequestParam("file") MultipartFile file,
-                              RedirectAttributes redirectAttributes) {
+    @PostMapping("/xoa")
+    public String softDeleteProduct(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
 
         try {
-            // validateion
+            khoService.deleteProductInSock(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/quan-ly/kho";
+    }
+
+    @PostMapping("/import")
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+
+        try {
             if (file.isEmpty()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng chọn file để import!");
                 return "redirect:/quan-ly/kho";
             }
 
-            // chec đinh dạng p=fial
             String fileName = file.getOriginalFilename();
             if (fileName == null || (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls"))) {
                 redirectAttributes.addFlashAttribute("errorMessage", "File phải có định dạng Excel (.xlsx hoặc .xls)!");
                 return "redirect:/quan-ly/kho";
             }
 
-            // check file nếu quá lơn
             if (file.getSize() > 10 * 1024 * 1024) {
                 redirectAttributes.addFlashAttribute("errorMessage", "File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.");
                 return "redirect:/quan-ly/kho";
             }
 
-            // Import data
             khoService.importFromExcel(file);
-
             redirectAttributes.addFlashAttribute("successMessage", "Import dữ liệu thành công!");
 
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi import: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi hệ thống khi đọc file Excel: " + e.getMessage());
         }
 
         return "redirect:/quan-ly/kho";
     }
-
 
 
 }

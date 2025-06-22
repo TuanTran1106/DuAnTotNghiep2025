@@ -24,8 +24,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -149,6 +149,34 @@ public class KhoServiceImpl implements KhoService {
         khoRepository.save(sp);
     }
 
+    @Override
+    public void deleteProductInSock(Integer id) {
+
+        SanPhamChiTiet sp = khoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại"));
+
+        sp.setTrangThai(0);
+        sp.setSoLuong(0);
+        khoRepository.save(sp);
+
+        LichSuKho lichSuKho = new LichSuKho();
+        lichSuKho.setSanPhamChiTiet(sp);
+        lichSuKho.setNgayNhap(LocalDate.now());
+        lichSuKho.setNgayNhap(lichSuKho.getNgayNhap());
+        lichSuKho.setNgayNhap(lichSuKho.getNgayNhap());
+        lichSuKho.setLoai("XOA");
+        NhanVien nhanVien = new NhanVien();
+        nhanVien.setId(1);
+        lichSuKho.setNhanVien(nhanVien);
+        lichSuKho.setSoLuong(0);
+        lichSuKho.setGhiChu("Bạn đã xóa sản phẩm" +" "+ sp.getSanPham().getTenSanPham());
+
+        ZonedDateTime vnNow = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDateTime now = vnNow.toLocalDateTime();
+        lichSuKho.setThoiGian(now);
+        lichSuKhoRepository.save(lichSuKho);
+
+    }
 
     @Override
     public List<ThuongHieu> findAllBrandInSock() {
@@ -161,108 +189,144 @@ public class KhoServiceImpl implements KhoService {
     }
 
     @Override
-    public Page<KhoDto> filterProductInSockPageable(String keyword, Integer thuongHieuId, Integer danhMucId, Integer trangThai, int page, int size) {
-
+    public Page<KhoDto> filterProductInSockPageable(String keyword, Integer thuongHieuId, Integer danhMucId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return khoRepository.filterWithPaging(keyword,thuongHieuId,danhMucId,trangThai,pageable);
-
+        return khoRepository.filterWithPaging(keyword, thuongHieuId, danhMucId, pageable);
     }
 
     @Override
     public void importFromExcel(MultipartFile file) {
 
+        List<String> errors = new ArrayList<>();
+
         try (InputStream is = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(is)) {
 
             Sheet sheet = workbook.getSheetAt(0);
+            if (sheet == null || sheet.getPhysicalNumberOfRows() <= 1) {
+                throw new IllegalArgumentException("File Excel không có dữ liệu hoặc không có sheet hợp lệ!");
+            }
+
+            Row headerRow = sheet.getRow(0);
+            if (headerRow == null || headerRow.getPhysicalNumberOfCells() < 8) {
+                throw new IllegalArgumentException("File Excel thiếu cột! Yêu cầu 8 cột: Tên Sản Phẩm, Màu Sắc, Kích Thước, Chất Liệu, Giá Nhập, Số Lượng, Thương Hiệu, Danh Mục.");
+            }
+
+            String[] expectedHeaders = {
+                    "Tên Sản Phẩm", "Màu Sắc", "Kích Thước", "Chất Liệu",
+                    "Giá Nhập", "Số Lượng", "Thương Hiệu", "Danh Mục"
+            };
+            for (int i = 0; i < expectedHeaders.length; i++) {
+                String header = getCellStringValue(headerRow.getCell(i));
+                if (header == null || !header.trim().equalsIgnoreCase(expectedHeaders[i])) {
+                    throw new IllegalArgumentException("Lỗi import dữ liệu vui lòng kiểm tra lại!");
+                }
+            }
+            if (!errors.isEmpty()) {
+                throw new IllegalArgumentException(String.join("; ", errors));
+            }
 
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
 
+                List<String> rowErrors = new ArrayList<>();
                 try {
                     String tenSp = getCellStringValue(row.getCell(0));
                     String mauSac = getCellStringValue(row.getCell(1));
                     String kichThuoc = getCellStringValue(row.getCell(2));
                     String chatLieu = getCellStringValue(row.getCell(3));
-
-                    if (tenSp == null || tenSp.trim().isEmpty()) {
-                        System.out.println("Bỏ qua dòng " + (row.getRowNum() + 1) + ": Tên sản phẩm không được để trống");
-                        continue;
-                    }
-
-                    double giaBan = getCellNumericValue(row.getCell(4));
-                    int soLuong = (int) getCellNumericValue(row.getCell(5));
+                    Double giaNhap = getCellNumericValue(row.getCell(4));
+                    Double soLuongDouble = getCellNumericValue(row.getCell(5));
                     String tenThuongHieu = getCellStringValue(row.getCell(6));
                     String tenDanhMuc = getCellStringValue(row.getCell(7));
 
-                    if (giaBan <= 0) {
-                        System.out.println("Bỏ qua dòng " + (row.getRowNum() + 1) + ": Giá bán phải lớn hơn 0");
+                    if (tenSp == null || tenSp.trim().isEmpty()) {
+                        rowErrors.add("Tên Sản Phẩm trống");
+                    }
+                    if (mauSac == null || mauSac.trim().isEmpty()) {
+                        rowErrors.add("Màu Sắc trống");
+                    }
+                    if (kichThuoc == null || kichThuoc.trim().isEmpty()) {
+                        rowErrors.add("Kích Thước trống");
+                    }
+                    if (chatLieu == null || chatLieu.trim().isEmpty()) {
+                        rowErrors.add("Chất Liệu trống");
+                    }
+                    if (giaNhap == null || giaNhap <= 0) {
+                        rowErrors.add("Giá Nhập không hợp lệ (phải > 0)");
+                    }
+                    if (soLuongDouble == null || soLuongDouble < 0 || soLuongDouble != Math.floor(soLuongDouble)) {
+                        rowErrors.add("Số Lượng không hợp lệ (phải là số nguyên >= 0)");
+                    }
+                    if (tenThuongHieu == null || tenThuongHieu.trim().isEmpty()) {
+                        rowErrors.add("Thương Hiệu trống");
+                    }
+                    if (tenDanhMuc == null || tenDanhMuc.trim().isEmpty()) {
+                        rowErrors.add("Danh Mục trống");
+                    }
+
+                    if (!rowErrors.isEmpty()) {
+                        errors.add("Dòng " + (row.getRowNum() + 1) + ": " + String.join(", ", rowErrors));
                         continue;
                     }
 
-                    if (soLuong < 0) {
-                        System.out.println("Bỏ qua dòng " + (row.getRowNum() + 1) + ": Số lượng không được âm");
-                        continue;
-                    }
+                    int soLuong = soLuongDouble.intValue();
 
-                    SanPhamChiTiet sp = khoRepository.findBySanPham_TenSanPhamAndMauSacAndKichThuoc(tenSp, mauSac, kichThuoc);
+                    SanPhamChiTiet spct = khoRepository.findBySanPham_TenSanPhamAndMauSacAndKichThuoc(tenSp, mauSac, kichThuoc);
 
-                    if (sp != null) {
-                        sp.setSoLuong(sp.getSoLuong() + soLuong);
-                        if (chatLieu != null && !chatLieu.trim().isEmpty()) {
-                            sp.setChatLieu(chatLieu);
+                    if (spct != null) {
+                        if (spct.getTrangThai() == 0) {
+                            spct.setTrangThai(1);
                         }
-                        sp.getSanPham().setGiaNhap(BigDecimal.valueOf(giaBan));
-                        sanPhamRepository.save(sp.getSanPham());
-                        khoRepository.save(sp);
-                        System.out.println("Đã cập nhật sản phẩm: " + tenSp + ", " + mauSac + ", " + kichThuoc);
+                        spct.setSoLuong(spct.getSoLuong() + soLuong);
+                        spct.setChatLieu(chatLieu);
+                        spct.getSanPham().setGiaNhap(BigDecimal.valueOf(giaNhap));
+                        sanPhamRepository.save(spct.getSanPham());
+                        khoRepository.save(spct);
                     } else {
                         SanPham sanPham = sanPhamRepository.findByTenSanPham(tenSp);
                         if (sanPham == null) {
                             sanPham = new SanPham();
                             sanPham.setTenSanPham(tenSp);
-                            sanPham.setGiaNhap(BigDecimal.valueOf(giaBan));
+                            sanPham.setGiaNhap(BigDecimal.valueOf(giaNhap));
                             sanPham.setNgayNhap(LocalDate.now());
                             sanPham.setTrangThai(true);
 
-                            if (tenThuongHieu != null && !tenThuongHieu.trim().isEmpty()) {
-                                ThuongHieu thuongHieu = thuongHieuRepository.findByTenThuongHieu(tenThuongHieu);
-                                if (thuongHieu == null) {
-                                    thuongHieu = new ThuongHieu();
-                                    thuongHieu.setTenThuongHieu(tenThuongHieu);
-                                    thuongHieu = thuongHieuRepository.save(thuongHieu);
-                                }
-                                sanPham.setThuongHieu(thuongHieu);
+                            ThuongHieu thuongHieu = thuongHieuRepository.findByTenThuongHieu(tenThuongHieu);
+                            if (thuongHieu == null) {
+                                thuongHieu = new ThuongHieu();
+                                thuongHieu.setTenThuongHieu(tenThuongHieu);
+                                thuongHieu = thuongHieuRepository.save(thuongHieu);
                             }
+                            sanPham.setThuongHieu(thuongHieu);
 
-                            // Tìm hoặc tạo danh mục
-                            if (tenDanhMuc != null && !tenDanhMuc.trim().isEmpty()) {
-                                DanhMuc danhMuc = danhMucRepository.findByTenDanhMuc(tenDanhMuc);
-                                if (danhMuc == null) {
-                                    danhMuc = new DanhMuc();
-                                    danhMuc.setTenDanhMuc(tenDanhMuc);
-                                    danhMuc = danhMucRepository.save(danhMuc);
-                                }
-                                sanPham.setDanhMuc(danhMuc);
+                            DanhMuc danhMuc = danhMucRepository.findByTenDanhMuc(tenDanhMuc);
+                            if (danhMuc == null) {
+                                danhMuc = new DanhMuc();
+                                danhMuc.setTenDanhMuc(tenDanhMuc);
+                                danhMuc = danhMucRepository.save(danhMuc);
                             }
+                            sanPham.setDanhMuc(danhMuc);
 
                             sanPham = sanPhamRepository.save(sanPham);
                         }
 
-                        SanPhamChiTiet newSpChiTiet = new SanPhamChiTiet();
-                        newSpChiTiet.setSanPham(sanPham);
-                        newSpChiTiet.setMauSac(mauSac);
-                        newSpChiTiet.setKichThuoc(kichThuoc);
-                        newSpChiTiet.setChatLieu(chatLieu);
-                        newSpChiTiet.setSoLuong(soLuong);
-                        sanPham.setGiaNhap(BigDecimal.valueOf(giaBan));
-
-                        khoRepository.save(newSpChiTiet);
+                        SanPhamChiTiet newSpct = new SanPhamChiTiet();
+                        newSpct.setSanPham(sanPham);
+                        newSpct.setMauSac(mauSac);
+                        newSpct.setKichThuoc(kichThuoc);
+                        newSpct.setChatLieu(chatLieu);
+                        newSpct.setSoLuong(soLuong);
+                        newSpct.setTrangThai(1);
+                        khoRepository.save(newSpct);
                     }
-
                 } catch (Exception e) {
-                    System.out.println("Lỗi xử lý dòng " + (row.getRowNum() + 1) + ": " + e.getMessage());
+                    errors.add("Dòng " + (row.getRowNum() + 1) + ": Lỗi xử lý - " + e.getMessage());
                 }
+            }
+
+            if (!errors.isEmpty()) {
+                throw new IllegalArgumentException(String.join("; ", errors));
             }
 
         } catch (IOException e) {
@@ -273,36 +337,38 @@ public class KhoServiceImpl implements KhoService {
     private String getCellStringValue(Cell cell) {
         if (cell == null) return null;
 
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue().trim();
-            case NUMERIC:
-                return String.valueOf((int) cell.getNumericCellValue());
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-            case FORMULA:
-                return cell.getStringCellValue().trim();
-            default:
-                return null;
+        try {
+            switch (cell.getCellType()) {
+                case STRING:
+                    return cell.getStringCellValue().trim();
+                case NUMERIC:
+                    return String.valueOf((int) cell.getNumericCellValue());
+                case BOOLEAN:
+                    return String.valueOf(cell.getBooleanCellValue());
+                case FORMULA:
+                    return cell.getStringCellValue().trim();
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private double getCellNumericValue(Cell cell) {
-        if (cell == null) return 0;
+    private Double getCellNumericValue(Cell cell) {
+        if (cell == null) return null;
 
-        switch (cell.getCellType()) {
-            case NUMERIC:
-                return cell.getNumericCellValue();
-            case STRING:
-                try {
+        try {
+            switch (cell.getCellType()) {
+                case NUMERIC:
+                    return cell.getNumericCellValue();
+                case STRING:
                     return Double.parseDouble(cell.getStringCellValue().trim());
-                } catch (NumberFormatException e) {
-                    return 0;
-                }
-            default:
-                return 0;
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            return null;
         }
     }
-
-
 }

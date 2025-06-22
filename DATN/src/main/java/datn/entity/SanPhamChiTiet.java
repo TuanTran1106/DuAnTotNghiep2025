@@ -37,6 +37,9 @@ public class SanPhamChiTiet {
     @Column(name = "gia_ban")
     private BigDecimal giaBan;
 
+    @Column(name = "trang_thai")
+    private int trangThai;
+
     @ManyToOne
     @JoinColumn(name = "id_san_pham", referencedColumnName = "id")
     private SanPham sanPham;
