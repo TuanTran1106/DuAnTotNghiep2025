@@ -1,96 +1,70 @@
 package datn.controller;
 
-import datn.entity.ChiTietGioHang;
 import datn.entity.GioHang;
 import datn.entity.NguoiDung;
-import datn.entity.SanPhamChiTiet;
+import datn.repository.GioHangRepo;
 import datn.repository.SanPhamChiTietRepo;
-import datn.service.ChiTietGioHangService;
-import datn.service.GioHangService;
-import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 @RequestMapping("/gio-hang")
-
 public class GioHangController {
+
     @Autowired
-    private ChiTietGioHangService   chiTietGioHangService;
+    private GioHangRepo gioHangRepo;
 
     @Autowired
     private SanPhamChiTietRepo sanPhamChiTietRepo;
 
+    // Hiển thị giỏ hàng
     @GetMapping
-    public String hienThiGioHang(Model model, HttpSession session) {
-        NguoiDung nguoiDung = (NguoiDung) session.getAttribute("nguoiDung");
-
-        if (nguoiDung == null) {
-            return "redirect:/login"; // hoặc bất kỳ trang nào bạn muốn
-        }
-
-        List<ChiTietGioHang> gioHang = chiTietGioHangService.layTheoNguoiDung(nguoiDung);
-
-        BigDecimal tongTien = gioHang.stream()
-                .map(item -> item.getSanPhamChiTiet().getGiaBan().multiply(BigDecimal.valueOf(item.getSoLuong())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public String xemGioHang(Model model) {
+        int nguoiDungId = 1; // hardcoded cho ví dụ
+        List<GioHang> gioHang = gioHangRepo.findByNguoiDung_Id(nguoiDungId);
         model.addAttribute("gioHang", gioHang);
-        model.addAttribute("tongTien", tongTien);
         return "gio-hang";
     }
 
+    // Thêm sản phẩm vào giỏ
     @PostMapping("/them")
-    public String themVaoGio(@RequestParam("id_spct") Integer idSpct,
-                             @RequestParam("so_luong") int soLuong,
-                             @SessionAttribute("nguoiDung") NguoiDung nguoiDung) {
-
-        SanPhamChiTiet spct = sanPhamChiTietRepo.findById(idSpct).orElse(null);
-        if (spct != null) {
-            chiTietGioHangService.themVaoGio(nguoiDung, spct, soLuong);
-        }
-
+    public String themVaoGio(@RequestParam int idSanPhamChiTiet) {
+        int nguoiDungId = 1;
+        GioHang item = new GioHang();
+        item.setNguoiDung(new NguoiDung(nguoiDungId));
+        item.setSanPhamChiTiet(sanPhamChiTietRepo.findById(idSanPhamChiTiet).get());
+        item.setSoLuong(1);
+        item.setNgayThem(LocalDateTime.now());
+        gioHangRepo.save(item);
         return "redirect:/gio-hang";
     }
+
+    // Xóa
     @PostMapping("/xoa")
-    public String xoaKhoiGio(@RequestParam("id") int id) {
-        chiTietGioHangService.xoaKhoiGio(id);
+    public String xoa(@RequestParam int id) {
+        gioHangRepo.deleteById(id);
         return "redirect:/gio-hang";
     }
 
-    @PostMapping("/tang-so-luong")
-    public String tangSoLuong(@RequestParam("id") int id) {
-        chiTietGioHangService.tangSoLuong(id);
+    // Tăng
+    @PostMapping("/tang")
+    public String tang(@RequestParam int id) {
+        GioHang gh = gioHangRepo.findById(id).get();
+        gh.setSoLuong(gh.getSoLuong() + 1);
+        gioHangRepo.save(gh);
         return "redirect:/gio-hang";
     }
 
-    @PostMapping("/giam-so-luong")
-    public String giamSoLuong(@RequestParam("id") int id) {
-        chiTietGioHangService.giamSoLuong(id);
+    // Giảm
+    @PostMapping("/giam")
+    public String giam(@RequestParam int id) {
+        GioHang gh = gioHangRepo.findById(id).get();
+        gh.setSoLuong(Math.max(1, gh.getSoLuong() - 1));
+        gioHangRepo.save(gh);
         return "redirect:/gio-hang";
-    }
-    @PostMapping("/upload")
-    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
-        String uploadDir = "src/main/resources/static/images/";
-        String fileName = file.getOriginalFilename();
-        Path path = Paths.get(uploadDir + fileName);
-        Files.write(path, file.getBytes());
-
-        SanPhamChiTiet sp = new SanPhamChiTiet();
-        sanPhamChiTietRepo.save(sp);
-        return "redirect:/sanpham/list";
-    }
-
-
-}
+    }}

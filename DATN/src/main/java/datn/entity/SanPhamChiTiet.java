@@ -31,6 +31,7 @@ public class SanPhamChiTiet {
     @Column(name = "chat_lieu")
     private String chatLieu;
 
+    @NotNull(message = "Vui lòng nhập chữ số!")
     @Column(name = "so_luong")
     private int soLuong;
 

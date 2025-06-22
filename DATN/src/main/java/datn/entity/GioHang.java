@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +24,18 @@ public class GioHang {
     private Integer id;
 
 
-    @Column(name = "ngay_tao")
-    private LocalDate ngayTao;
+    @Column(name = "ngay_them")
+    private LocalDateTime ngayThem;
+
+    @Column(name = "so_luong")
+    private int soLuong;
 
     @ManyToOne
     @JoinColumn(name = "id_nguoi_dung", referencedColumnName = "id")
     private NguoiDung nguoiDung;
 
-    @OneToMany(mappedBy = "gioHang", cascade = CascadeType.ALL)
-    private List<ChiTietGioHang> chiTietGioHangList = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "id_san_pham_chi_tiet")
+    private SanPhamChiTiet sanPhamChiTiet;
+
 }
