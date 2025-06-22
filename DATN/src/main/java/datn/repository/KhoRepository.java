@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +28,8 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
     Integer totalProductInSock();
 
     // tổng giá trị tồn trong kho
-    @Query(value = "SELECT SUM(gia_ban*so_luong) FROM san_pham_chi_tiet" , nativeQuery = true)
-    BigDecimal totalPriceInSock();
+    @Query(value = "SELECT SUM(sp.gia_nhap * ct.so_luong) FROM san_pham sp JOIN san_pham_chi_tiet ct ON sp.id = ct.id_san_pham", nativeQuery = true)
+    BigDecimal totalPriceInSock();;
 
     // sắp hét hàng
     @Query(value = "SELECT COUNT(so_luong) FROM san_pham_chi_tiet WHERE so_luong <=3" , nativeQuery = true)
@@ -44,6 +45,7 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
             ct.chat_lieu AS chatLieu,
             ct.so_luong AS soLuong,
             ct.gia_ban AS giaBan,
+            sp.gia_nhap AS giaNhap,
             th.ten_thuong_hieu AS tenThuongHieu,
             dm.ten_danh_muc AS tenDanhMuc
         FROM san_pham_chi_tiet ct
@@ -74,5 +76,10 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
                 @Param("trangThai") Integer trangThai,
                 Pageable pageable
         );
+
+    @Query("SELECT sp FROM SanPhamChiTiet sp WHERE sp.sanPham.tenSanPham = :tenSanPham AND sp.mauSac = :mauSac AND sp.kichThuoc = :kichThuoc")
+    SanPhamChiTiet findBySanPham_TenSanPhamAndMauSacAndKichThuoc(@Param("tenSanPham") String tenSanPham, @Param("mauSac") String mauSac, @Param("kichThuoc") String kichThuoc);
+
+    Collection<Object> findBySoLuongLessThanEqual(int lowStockThreshold);
 }
 

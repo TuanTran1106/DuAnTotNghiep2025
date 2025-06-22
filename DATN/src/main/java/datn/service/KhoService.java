@@ -6,12 +6,14 @@ import datn.entity.SanPhamChiTiet;
 import datn.entity.ThuongHieu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 public interface KhoService {
+
 
     // lất tổng sản phẩm
     Integer getTotalProduct();
@@ -34,4 +36,7 @@ public interface KhoService {
     List<DanhMuc> findAllCategoryInSock();
 
     Page<KhoDto> filterProductInSockPageable(String keyword, Integer thuongHieuId, Integer danhMucId, Integer trangThai,int page, int size);
+
+    void importFromExcel(MultipartFile file);
+
 }
