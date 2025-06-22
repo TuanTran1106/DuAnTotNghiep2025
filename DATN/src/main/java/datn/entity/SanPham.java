@@ -39,6 +39,10 @@ public class SanPham {
     @Column(name = "trang_thai")
     private Boolean trangThai;
 
+
+    @Column(name = "hinh_anh")
+    private String hinhAnh;
+
     @ManyToOne
     @JoinColumn(name = "id_thuong_hieu", referencedColumnName = "id")
     private ThuongHieu thuongHieu;

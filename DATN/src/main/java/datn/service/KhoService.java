@@ -2,15 +2,12 @@ package datn.service;
 
 import datn.dto.KhoDto;
 import datn.entity.DanhMuc;
-import datn.entity.SanPhamChiTiet;
 import datn.entity.ThuongHieu;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 public interface KhoService {
 

@@ -10,11 +10,13 @@ import datn.service.GioHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+
 public class GioHangServiceImpl implements GioHangService {
     @Autowired
     private GioHangRepo gioHangRepo;
@@ -51,6 +53,14 @@ public class GioHangServiceImpl implements GioHangService {
             gioHangRepo.save(moi);
         }
     }
+    @Override
+    public BigDecimal tinhTongTien(List<GioHang> gioHang) {
+        return gioHang.stream()
+                .map(g -> BigDecimal.valueOf(g.getSoLuong())
+                        .multiply(g.getSanPhamChiTiet().getGiaBan()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 
     @Override
     public void tangSoLuong(int gioHangId) {
