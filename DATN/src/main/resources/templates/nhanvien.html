@@ -653,9 +653,9 @@
     <td th:text="${nv.dia_chi}"></td>
     <td th:text="${nv.gioi_tinh ? 'Nam' : 'Nữ'}"></td>
     <td>
-      <a href="javascript:void(0);" onclick="showForm()" style="background-color:#2ecc71; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">➕ Thêm</a>
-      <a th:href="@{|/nhanvien/xoa/${nv.id}|}" onclick="saveSuccess('delete')" style="background-color:#e74c3c; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">❌ Xoá</a>
-      <a th:href="@{|/nhanvien/detail/${nv.id}|}" style="background-color:#3498db; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">Chi tiết</a>
+      <a href="javascript:void(0);" onclick="showForm()" style="background-color:#2ecc71; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">➕</a>
+      <a th:href="@{|/nhanvien/xoa/${nv.id}|}" onclick="saveSuccess('delete')" style="background-color:#e74c3c; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">❌</a>
+      <a th:href="@{|/nhanvien/detail/${nv.id}|}" style="background-color:#3498db; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">📒</a>
     </td>
   </tr>
   </tbody>
