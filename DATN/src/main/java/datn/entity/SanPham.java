@@ -18,10 +18,12 @@ import java.time.LocalDateTime;
 @Table(name = "san_pham")
 public class SanPham {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "ma_san_pham")
+    private String maSanPham;
 
     @Column(name = "ten_san_pham")
     private String tenSanPham;

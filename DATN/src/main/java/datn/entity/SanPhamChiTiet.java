@@ -22,15 +22,19 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull(message = "Màu sắc không được để trống!")
     @Column(name = "mau_sac")
     private String mauSac;
 
+    @NotNull(message = "Kích thước không được để trống!")
     @Column(name = "kich_thuoc")
     private String kichThuoc;
 
+    @NotNull(message = "Chất liệu không được để trống!")
     @Column(name = "chat_lieu")
     private String chatLieu;
 
+    @NotNull(message = "Số lượng không được để trống và phải là số!")
     @NotNull(message = "Vui lòng nhập chữ số!")
     @Column(name = "so_luong")
     private int soLuong;
@@ -40,6 +44,7 @@ public class SanPhamChiTiet {
 
     @Column(name = "trang_thai")
     private int trangThai;
+
 
     @ManyToOne
     @JoinColumn(name = "id_san_pham", referencedColumnName = "id")
