@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
-public class Controller {
+public class NhanVienController {
     @Autowired
     private NhanvienRepository nhanVienRepository;
 
