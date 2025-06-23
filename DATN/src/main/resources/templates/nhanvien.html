@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Watch Aura</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      line-height: 1.6;
+    }
+    :root {
+      /* Colors */
+      --primary-orange: #ff8c00;
+      --primary-orange-light: #ffa500;
+      --primary-red: #e74c3c;
+      --primary-red-dark: #c0392b;
+      --primary-green: #28a745;
+      --primary-green-dark: #218838;
+      --primary-blue: #007bff;
+      --primary-blue-dark: #0056b3;
+
+      --text-primary: #333;
+      --text-secondary: #666;
+      --text-muted: #999;
+      --text-light: #bdc3c7;
+
+      --bg-white: #fff;
+      --bg-light: #f8f9fa;
+      --bg-dark: #141414;
+      --bg-dark-secondary: #141414;
+
+      --border-light: #e0e0e0;
+      --border-lighter: #f0f0f0;
+
+      --spacing-xs: 5px;
+      --spacing-sm: 10px;
+      --spacing-md: 15px;
+      --spacing-lg: 20px;
+      --spacing-xl: 30px;
+      --spacing-xxl: 40px;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 10px;
+      --radius-xl: 25px;
+      --radius-full: 50%;
+
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 3px 15px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+      --transition: all 0.3s ease;
+      --transition-fast: all 0.2s ease;
+    }
+    .header-top {
+      background: #2e2d2d;
+      color: var(--bg-white);
+      padding: 8px 0;
+      font-size: 12px;
+    }
+
+    .header-main {
+      background: var(--bg-white);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      z-index: 1000;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      color: var(--text-primary) !important;
+    }
+
+    .nav-item {
+      margin: 0 var(--spacing-sm);
+    }
+
+    .nav-link {
+      color: var(--text-primary) !important;
+      font-weight: 500;
+      padding: var(--spacing-md) var(--spacing-sm) !important;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--primary-orange) !important;
+    }
+
+    /* Search Box */
+    .search-box {
+      position: relative;
+      max-width: 300px;
+    }
+
+    .search-box input {
+      border-radius: var(--radius-xl);
+      padding: 8px 40px 8px var(--spacing-md);
+      border: 2px solid var(--border-light);
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .search-box .search-btn {
+      position: absolute;
+      right: var(--spacing-sm);
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    /*Sidebar Menu*/
+    .sidebar-menu {
+      position: fixed;
+      left: -280px;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--bg-white);
+      box-shadow: 2px 0 var(--spacing-sm) rgba(0, 0, 0, 0.1);
+      transition: left 0.3s ease;
+      z-index: 1050;
+      overflow-y: auto;
+    }
+
+    .sidebar-menu.show {
+      left: 0;
+    }
+
+    .sidebar-header {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--bg-white);
+      padding: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .sidebar-menu ul {
+      list-style: none;
+    }
+
+    .sidebar-menu li {
+      border-bottom: 1px solid var(--border-lighter);
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-md) var(--spacing-lg);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .sidebar-menu a:hover {
+      background: var(--bg-light);
+      color: var(--primary-orange);
+    }
+
+    .sidebar-menu i {
+      margin-right: var(--spacing-md);
+      width: var(--spacing-lg);
+      text-align: center;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1040;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--text-primary);
+      padding: var(--spacing-sm);
+      cursor: pointer;
+    }
+
+    /*Hero Banner*/
+    .banner {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .banner-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    /*Section Styles*/
+    .header-section {
+      background: var(--bg-white);
+      padding: var(--spacing-xl) 0;
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .main-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-primary);
+      text-align: center;
+      margin-bottom: var(--spacing-md);
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+      line-height: 1.6;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-xxl);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /*footer*/
+    .main-footer {
+      background-image: url('/images/Back2.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #ffffff;
+      padding: 60px 0 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    .footer-section {
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-logo {
+      margin-bottom: 30px;
+    }
+
+    .footer-logo img {
+      max-width: 180px;
+      height: auto;
+      filter: brightness(1.1);
+    }
+
+    .footer-section h5 {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 25px;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .contact-info {
+      margin-top: 20px;
+    }
+
+    .contact-info p {
+      margin-bottom: 12px;
+      color: #e3f2fd;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    .contact-info p strong {
+      color: #b9863e;
+      min-width: 60px;
+      margin-right: 8px;
+    }
+
+    .contact-info p i {
+      color: #b9863e;
+      margin-right: 12px;
+      width: 16px;
+      text-align: center;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .footer-section ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #b9863e;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .footer-section ul li a {
+      color: #e3f2fd;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      line-height: 1.5;
+    }
+
+    .footer-section ul li:hover::before {
+      color: #b9863e;
+      transform: translateX(3px);
+    }
+
+    .footer-section ul li a:hover {
+      color: #b9863e;
+      padding-left: 5px;
+    }
+
+    .newsletter-form {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .newsletter-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid rgba(100, 181, 246, 0.3);
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .newsletter-input:focus {
+      outline: none;
+      border-color: #64b5f6;
+      box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.2);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .newsletter-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .newsletter-btn {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(45deg, #64b5f6, #42a5f5);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+    }
+
+    .newsletter-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+      background: linear-gradient(45deg, #42a5f5, #1e88e5);
+    }
+
+    .newsletter-description {
+      color: #ffffff;
+      font-size: 13px;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .footer-bottom {
+      margin-top: 50px;
+
+
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      color: #B9863EFF;
+      font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+      .main-footer {
+        padding: 40px 0 20px;
+        background-attachment: scroll;
+      }
+
+      .footer-section {
+        margin-bottom: 40px;
+      }
+
+      .footer-logo img {
+        max-width: 150px;
+      }
+    }
+    .top-features {
+      background: linear-gradient(135deg, #a0616a, #8b4c55);
+      padding: var(--spacing-md) 0;
+      color: var(--bg-white);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: var(--spacing-sm);
+      font-size: 18px;
+    }
+
+    .feature-text {
+      font-size: 13px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    table {
+      width: 90%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: var(--shadow-md);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    thead {
+      background-color: #444545;
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-light">
+<div class="header-top">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <span><i class="fas fa-phone"></i> HOTLINE: 0123456789</span>
+      </div>
+      <div class="col-md-6 text-end">
+        <span><i class="fas fa-shipping-fast"></i> HỆ THỐNG CỬA HÀNG</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header class="header-main">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <button class="menu-toggle me-3" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <a class="navbar-brand" href="#">WATCHAURA.com| Quản lý nhân viên</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Thương hiệu</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Casio</a></li>
+              <li><a class="dropdown-item" href="#">Orient</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Danh mục</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Casio</a></li>
+              <li><a class="dropdown-item" href="#">Orient</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Xuất xứ</a>
+          </li>
+        </ul>
+
+        <!-- Search Box -->
+        <div class="search-box">
+          <input type="text" class="form-control" placeholder="Tìm kiếm...">
+          <button class="search-btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<div class="sidebar-menu" id="sidebarMenu">
+  <div class="sidebar-header">
+    <h5>MENU</h5>
+  </div>
+  <ul>
+    <li><a th:href="@{/nguoidung}"><i class="fas fa-user"></i> Tài khoản</a></li>
+    <li><a href="#"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a></li>
+    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Địa chỉ</a></li>
+    <li><a href="#"><i class="fas fa-box"></i> Đơn hàng</a></li>
+    <li><a href="#"><i class="fas fa-percentage"></i> Khuyến mại</a></li>
+    <li><a href="#"><i class="fas fa-phone"></i> Liên hệ CSKH</a></li>
+  </ul>
+</div>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<body>
+<div th:if="${successMessage}" style="color: green; font-weight: bold; text-align: center; margin-bottom: 20px;">
+  <p th:text="${successMessage}"></p>
+</div>
+
+<div id="addForm" style="
+  display: none;
+  width: 90%;
+  margin: 20px auto;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+">
+
+  <form id="addEmployeeForm"
+        onsubmit="return validateForm()"
+        action="/mango/save"
+        method="post"
+        th:object="${nhanvien}"
+        style="max-width: 500px; margin: 0 auto; text-align: left;">
+
+    <h3 style="text-align: center;">Thêm mới nhân viên</h3>
+
+    <label>Họ tên:</label><br>
+    <input type="text" id="hoten" th:field="*{hoten}" placeholder="Nhập họ tên" class="form-control"><br>
+    <span id="hotenError" style="color:red;"></span><br>
+
+    <label>Email:</label><br>
+    <input type="email" id="email" th:field="*{email}" placeholder="Nhập email" class="form-control"><br>
+    <span id="emailError" style="color:red;"></span><br>
+
+    <label>Số điện thoại:</label><br>
+    <input type="text" id="sdt" th:field="*{sdt}" placeholder="Nhập số điện thoại" class="form-control"><br>
+    <span id="sdtError" style="color:red;"></span><br>
+
+    <label>Địa chỉ:</label><br>
+    <input type="text" id="diachi" th:field="*{dia_chi}" placeholder="Nhập địa chỉ" class="form-control"><br>
+    <span id="diachiError" style="color:red;"></span><br>
+
+    <label>Giới tính:</label><br>
+    <input type="radio" th:field="*{gioi_tinh}" value="true"> Nam
+    <input type="radio" th:field="*{gioi_tinh}" value="false"> Nữ<br><br>
+
+    <div style="text-align: center;">
+      <button type="submit"
+              onclick="saveSuccess('add')"
+              style="background-color:#3498db; color:white; padding: 8px 12px; border: none; border-radius: 5px;">
+        Lưu
+      </button>
+      <button type="button"
+              onclick="hideForm()"
+              style="background-color:#e67e22; color:white; padding: 8px 12px; border: none; border-radius: 5px;">
+        Huỷ
+      </button>
+    </div>
+  </form>
+</div>
+<div id="successAlert" style="
+  display: none;
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  text-align: center;
+  margin: 20px auto;
+  width: 90%;
+  border-radius: 5px;
+  font-weight: bold;
+"></div>
+<table>
+  <thead>
+  <tr>
+    <th>ID Nhân Viên</th>
+    <th>Họ và tên</th>
+    <th>Email</th>
+    <th>Số điện thoại</th>
+    <th>Địa chỉ</th>
+    <th>Giới tính</th>
+    <th>Hành động</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="nv : ${list}">
+    <td th:text="${nv.id}"></td>
+    <td th:text="${nv.hoten}"></td>
+    <td th:text="${nv.email}"></td>
+    <td th:text="${nv.sdt}"></td>
+    <td th:text="${nv.dia_chi}"></td>
+    <td th:text="${nv.gioi_tinh ? 'Nam' : 'Nữ'}"></td>
+    <td>
+      <a href="javascript:void(0);" onclick="showForm()" style="background-color:#2ecc71; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">➕ Thêm</a>
+      <a th:href="@{|/nhanvien/xoa/${nv.id}|}" onclick="saveSuccess('delete')" style="background-color:#e74c3c; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">❌ Xoá</a>
+      <a th:href="@{|/nhanvien/detail/${nv.id}|}" style="background-color:#3498db; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">Chi tiết</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div class="top-features">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <div class="feature-text">
+            100% HÀNG CHÍNH HÃNG
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-shipping-fast"></i>
+          </div>
+          <div class="feature-text">
+            MIỄN PHÍ VẬN CHUYỂN
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="feature-text">
+            BẢO HÀNH CHÍNH HÃNG
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          <div class="feature-text">
+            ĐỔI HÀNG TRONG 7 NGÀY
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="main-footer">
+  <div class="container">
+    <div class="row">
+      <!-- Logo and Contact Info -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="footer-logo">
+          <img th:src="@{/images/Logo2.png}"
+               src="https://via.placeholder.com/180x60/1a1a2e/64b5f6?text=LOGO" alt="Logo"
+               class="img-fluid">
+        </div>
+        <div class="footer-section">
+          <h5>Thông tin liên hệ</h5>
+          <div class="contact-info">
+            <p>
+              <i class="fas fa-envelope"></i>
+              <strong>Mail:</strong> phucnhph50219@gmail.com
+            </p>
+            <p>
+              <i class="fas fa-phone"></i>
+              <strong>Hotline:</strong> 0123.456.789 - 0382.916.733
+            </p>
+            <p>
+              <i class="fas fa-map-marker-alt"></i>
+              <strong>Địa chỉ:</strong> Hà Nội, Việt Nam
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Hướng dẫn -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="footer-section">
+          <h5>Hướng dẫn</h5>
+          <ul>
+            <li><a href="#">Hướng dẫn mua hàng</a></li>
+            <li><a href="#">Hướng dẫn sử dụng đồng hồ</a></li>
+            <li><a href="#">Chính sách đổi hàng</a></li>
+            <li><a href="#">Chính sách bảo hành</a></li>
+            <li><a href="#">Thông tin chuyển khoản</a></li>
+            <li><a href="#">Câu hỏi thường gặp</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Sản phẩm & Dịch vụ -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="footer-section">
+          <h5>Sản phẩm & Dịch vụ</h5>
+          <ul>
+            <li><a href="#">Liên hệ & Đặt hàng</a></li>
+            <li><a href="#">Dịch vụ in Logo lên đồng hồ</a></li>
+            <li><a href="#">Dịch vụ khắc Laser lên đồng hồ</a></li>
+            <li><a href="#">Đây dá zircon - Hộp đồng hồ</a></li>
+            <li><a href="#">Bảo trì và sửa chữa</a></li>
+            <li><a href="#">Tư vấn chọn đồng hồ</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Đăng ký nhận tin -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="footer-section">
+          <h5>Đăng ký nhận tin</h5>
+          <p class="newsletter-description">
+            Nhận thông tin khuyến mãi và sản phẩm mới nhất từ chúng tôi
+          </p>
+          <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+            <input type="email" class="newsletter-input" placeholder="Nhập địa chỉ email"
+                   required>
+            <button type="submit" class="newsletter-btn">
+              <i class="fas fa-paper-plane me-1"></i>Đăng ký
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-start">
+          <p class="mb-0">© 2024 Watch Aura. Tất cả quyền được bảo lưu.</p>
+        </div>
+        <div class="col-md-6 text-end">
+          <p class="mb-0">
+            <a href="#" style="color: #B9863EFF; text-decoration: none;">Điều khoản sử dụng</a> |
+            <a href="#" style="color: #B9863EFF; text-decoration: none;"> Chính sách bảo mật</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function showForm() {
+    document.getElementById("addForm").style.display = "block";
+  }
+  function hideForm() {
+    document.getElementById("addForm").style.display = "none";
+  }
+  function validateForm() {
+    const hoten = document.getElementById("hoten").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const sdt = document.getElementById("sdt").value.trim();
+    const diachi = document.getElementById("diachi").value.trim();
+    let isValid = true;
+    document.getElementById("hotenError").innerText = "";
+    document.getElementById("emailError").innerText = "";
+    document.getElementById("sdtError").innerText = "";
+    document.getElementById("diachiError").innerText = "";
+    if (!hoten) {
+      document.getElementById("hotenError").innerText = "Họ tên không được để trống!";
+      isValid = false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      document.getElementById("emailError").innerText = "Email không được để trống!";
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      document.getElementById("emailError").innerText = "Email không đúng định dạng!";
+      isValid = false;
+    }
+    const phoneRegex = /^0\d{9}$/;
+    if (!sdt) {
+      document.getElementById("sdtError").innerText = "SĐT không được để trống!";
+      isValid = false;
+    } else if (!phoneRegex.test(sdt)) {
+      document.getElementById("sdtError").innerText = "SĐT không hợp lệ!";
+      isValid = false;
+    }
+    if (!diachi) {
+      document.getElementById("diachiError").innerText = "Địa chỉ không được để trống!";
+      isValid = false;
+    }
+    return isValid;
+  }
+  function saveSuccess(type) {
+    localStorage.setItem("showSuccess", type);
+  }
+
+  window.onload = function () {
+    const type = localStorage.getItem("showSuccess");
+    if (type) {
+      const alertBox = document.getElementById("successAlert");
+      if (type === "add") {
+        alertBox.innerText = "✅ Thêm nhân viên thành công!";
+      } else if (type === "delete") {
+        alertBox.innerText = "🗑️ Xoá nhân viên thành công!";
+      }
+      alertBox.style.display = "block";
+      setTimeout(() => {
+        alertBox.style.display = "none";
+        localStorage.removeItem("showSuccess");
+      }, 3000);
+    }
+  }
+  function toggleMenu() {
+    const sidebar = document.getElementById('sidebarMenu');
+    const overlay = document.getElementById('overlay');
+
+    sidebar.classList.toggle('show');
+    overlay.classList.toggle('show');
+  }
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      const sidebar = document.getElementById('sidebarMenu');
+      const overlay = document.getElementById('overlay');
+
+      if (sidebar.classList.contains('show')) {
+        toggleMenu();
+      }
+    }
+  });
+  document.querySelector('.search-box input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      const searchTerm = this.value;
+      alert('Tìm kiếm: ' + searchTerm);
+    }
+  });
+
+  document.querySelector('.search-btn').addEventListener('click', function () {
+    const searchTerm = document.querySelector('.search-box input').value;
+    alert('Tìm kiếm: ' + searchTerm);
+  });
+  document.querySelectorAll('.blog-card').forEach(card => {
+    card.addEventListener('click', function () {
+      this.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 150);
+    });
+  });
+
+  // Add loading animation
+  document.addEventListener('DOMContentLoaded', function () {
+    const cards = document.querySelectorAll('.blog-card');
+    cards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, index * 200);
+    });
+  });
+  function handleNewsletterSubmit(event) {
+    event.preventDefault();
+    const email = event.target.querySelector('input[type="email"]').value;
+    if (email) {
+      const btn = event.target.querySelector('.newsletter-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-check"></i> Đã đăng ký';
+      btn.style.background = '#27ae60';
+
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
+        event.target.reset();
+      }, 2000);
+      alert('Cảm ơn bạn đã đăng ký nhận tin từ WatchAura!');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    const footerSections = document.querySelectorAll('.footer-section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    });
+
+    footerSections.forEach(section => {
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(20px)';
+      section.style.transition = 'all 0.6s ease';
+      observer.observe(section);
+    });
+  });
+  document.querySelectorAll('.footer-section a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+    });
+  });
+</script>
+</div>
+</body>
+</html>
