@@ -12,4 +12,5 @@ import java.util.Optional;
 @Repository
 public interface GioHangRepo extends JpaRepository<GioHang,Integer> {
     List<GioHang> findByNguoiDung_Id(int nguoiDungId);
+    Optional<GioHang> findByNguoiDung_IdAndSanPhamChiTiet_Id(int idNguoiDung, int idSpct);
 }

@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "san_pham")
 public class SanPham {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -37,11 +39,11 @@ public class SanPham {
     private String moTa;
 
     @Column(name = "trang_thai")
-    private Boolean trangThai;
-
+    private int trangThai;
 
     @Column(name = "hinh_anh")
     private String hinhAnh;
+
 
     @ManyToOne
     @JoinColumn(name = "id_thuong_hieu", referencedColumnName = "id")

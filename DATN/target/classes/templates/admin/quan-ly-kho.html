@@ -7,9 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
     <style>
+
         body {
             background-color: #e9ecef;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -168,8 +169,12 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .table th {
@@ -230,12 +235,30 @@
         }
 
         @keyframes slideIn {
-            to { opacity: 1; transform: translateY(0); }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes fadeOut {
-            to { opacity: 0; transform: translateY(-20px); }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
         }
+
+        .no-data {
+            color: rgba(107, 114, 128, 0.6);
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        .no-data i {
+            opacity: 0.6;
+            vertical-align: middle;
+        }
+
     </style>
 </head>
 <body class="antialiased">
@@ -258,7 +281,7 @@
                 </div>
             </div>
 
-            <!-- header -->
+            <!-- header  -->
             <div class="row g-4 mb-6">
                 <div class="col-md-3">
                     <div class="card p-4">
@@ -292,33 +315,31 @@
                 <form class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label text-sm font-medium">Từ khóa</label>
-                        <input style="font-size: 14px" type="text" class="form-control" name="keyword" placeholder="Tên sản phẩm...">
+                        <input style="font-size: 14px" type="text" class="form-control" name="keyword"
+                               placeholder="Tên sản phẩm...">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label text-sm font-medium">Thương hiệu</label>
                         <select style="font-size: 14px" class="form-select" name="thuongHieu">
                             <option style="font-size: 14px" value="">-- Tất cả --</option>
-                            <option style="font-size: 14px" th:each="brand : ${listBrand}" th:value="${brand.id}" th:text="${brand.tenThuongHieu}"></option>
+                            <option style="font-size: 14px" th:each="brand : ${listBrand}" th:value="${brand.id}"
+                                    th:text="${brand.tenThuongHieu}"></option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label text-sm font-medium">Danh mục</label>
                         <select style="font-size: 14px" class="form-select" name="danhMuc">
                             <option style="font-size: 14px" value="">-- Tất cả --</option>
-                            <option style="font-size: 14px" th:each="dm : ${listCategory}" th:value="${dm.id}" th:text="${dm.tenDanhMuc}"></option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label text-sm font-medium">Trạng thái</label>
-                        <select style="font-size: 14px" class="form-select" name="status">
-                            <option style="font-size: 14px" value="">-- Tất cả --</option>
-                            <option style="font-size: 14px" value="1">Còn hàng</option>
-                            <option value="0">Hết hàng</option>
+                            <option style="font-size: 14px" th:each="dm : ${listCategory}" th:value="${dm.id}"
+                                    th:text="${dm.tenDanhMuc}"></option>
                         </select>
                     </div>
                     <div class="col-md-3 d-flex gap-2">
-                        <button style="font-size: 14px" class="btn btn-custom btn-primary btn-filter" type="submit">Lọc</button>
-                        <a style="font-size: 14px" href="/quan-ly/kho" class="btn btn-custom btn-outline-secondary btn-reset">Reset</a>
+                        <button style="font-size: 14px" class="btn btn-custom btn-primary btn-filter" type="submit">
+                            <i class="bi bi-funnel me-1"></i> Bộ Lọc
+                        </button>
+                        <a style="font-size: 14px" href="/quan-ly/kho"
+                           class="btn btn-custom btn-outline-secondary btn-reset">Reset</a>
                     </div>
                 </form>
             </div>
@@ -345,6 +366,14 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr th:if="${listInSock.isEmpty()}">
+                            <td colspan="10" class="text-center py-3">
+                                <span class="no-data">
+                                    <i class="bi bi-database fs-5 me-2"></i>
+                                    <em style="font-size: 14px">Không có dữ liệu...</em>
+                                </span>
+                            </td>
+                        </tr>
                         <tr th:each="sock,start : ${listInSock}" th:class="${sock.soLuong <= 10} ? 'bg-red-50'">
                             <td th:text="${start.index + 1}"></td>
                             <td th:text="${sock.tenSanPham}"></td>
@@ -352,18 +381,29 @@
                             <td th:text="${sock.kichThuoc}"></td>
                             <td th:text="${sock.chatLieu}"></td>
                             <td th:text="${#numbers.formatDecimal(sock.giaNhap, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-                            <td class="font-semibold" th:class="${sock.soLuong <= 10} ? 'text-red-600' : 'text-gray-900'" th:text="${sock.soLuong}"></td>
+                            <td class="font-semibold"
+                                th:class="${sock.soLuong <= 10} ? 'text-red-600' : 'text-gray-900'"
+                                th:text="${sock.soLuong}"></td>
                             <td th:text="${sock.tenThuongHieu}"></td>
                             <td th:text="${sock.tenDanhMuc}"></td>
                             <td class="d-flex gap-2 justify-content-center">
-                                <a class="text-primary btn-nhap" href="#" th:attr="data-id=${sock.id}" title="Nhập hàng" data-bs-placement="top" data-bs-toggle="modal" data-bs-target="#enter">
+                                <a class="text-primary btn-nhap" href="#" th:attr="data-id=${sock.id}" title="Nhập hàng"
+                                   data-bs-placement="top" data-bs-toggle="modal" data-bs-target="#enter">
                                     <i class="bi bi-box-arrow-in-down fs-5"></i>
                                 </a>
-                                <a class="text-danger btn-xuat" href="#" th:attr="data-id=${sock.id}" title="Xuất hàng" data-bs-placement="top" data-bs-toggle="modal" data-bs-target="#export">
+                                <a class="text-danger btn-xuat" href="#" th:attr="data-id=${sock.id}" title="Xuất hàng"
+                                   data-bs-placement="top" data-bs-toggle="modal" data-bs-target="#export">
                                     <i class="bi bi-box-arrow-up fs-5"></i>
                                 </a>
-                                <a class="text-warning btn-sua" href="#" th:attr="data-id=${sock.id}" title="Cập nhật số lượng mới" data-bs-placement="top" data-bs-toggle="modal" data-bs-target="#editModal">
+                                <a class="text-warning btn-sua" href="#" th:attr="data-id=${sock.id}"
+                                   title="Cập nhật số lượng mới" data-bs-placement="top" data-bs-toggle="modal"
+                                   data-bs-target="#editModal">
                                     <i class="bi bi-pencil-square fs-5"></i>
+                                </a>
+                                <a class="text-danger btn-xoa" href="#" th:attr="data-id=${sock.id}"
+                                   title="Xóa sản phẩm" data-bs-placement="top" data-bs-toggle="modal"
+                                   data-bs-target="#deleteModal">
+                                    <i class="bi bi-trash fs-5"></i>
                                 </a>
                             </td>
                         </tr>
@@ -377,7 +417,8 @@
                         <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link" th:href="@{/quan-ly/kho(page=${startPage - 1})}">«</a>
                         </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}" th:classappend="${i == startPage} ? 'active'">
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}"
+                            th:classappend="${i == startPage} ? 'active'">
                             <a class="page-link" th:href="@{/quan-ly/kho(page=${i})}" th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item" th:classappend="${startPage == totalPage - 1} ? 'disabled'">
@@ -395,22 +436,28 @@
                         <div class="modal-content border-0 rounded shadow-sm">
                             <div class="modal-header bg-white border-bottom">
                                 <h5 class="modal-title text-dark fw-semibold">Nhập Hàng</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="soLuongNhap" name="soLuong" placeholder="Số lượng nhập" min="1">
-                                    <label style="font-size: 14px" for="soLuongNhap">Số lượng nhập <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="soLuongNhap" name="soLuong"
+                                           placeholder="Số lượng nhập" min="1">
+                                    <label style="font-size: 14px" for="soLuongNhap">Số lượng nhập <span
+                                            class="text-danger">*</span></label>
                                     <div class="invalid-feedback" id="soLuongNhapError"></div>
                                 </div>
                                 <div class="form-floating" style="padding-top: 10px">
-                                    <input type="text" class="form-control" id="ghiChu" name="ghiChuNhap" placeholder="Ghi chú">
+                                    <input type="text" class="form-control" id="ghiChu" name="ghiChuNhap"
+                                           placeholder="Ghi chú">
                                     <label style="font-size: 14px" for="ghiChu">Ghi chú</label>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light border-top">
                                 <button type="submit" class="btn btn-primary btn-sm">Lưu</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                                    Hủy
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -425,22 +472,28 @@
                         <div class="modal-content border-0 rounded shadow-sm">
                             <div class="modal-header bg-white border-bottom">
                                 <h5 class="modal-title text-dark fw-semibold">Xuất Hàng</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="soLuongXuat" name="soLuong" placeholder="Số lượng xuất" min="1">
-                                    <label style="font-size: 14px" for="soLuongXuat">Số lượng xuất <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="soLuongXuat" name="soLuong"
+                                           placeholder="Số lượng xuất" min="1">
+                                    <label style="font-size: 14px" for="soLuongXuat">Số lượng xuất <span
+                                            class="text-danger">*</span></label>
                                     <div class="invalid-feedback" id="soLuongXuatError"></div>
                                 </div>
                                 <div class="form-floating" style="padding-top: 10px">
-                                    <input type="text" class="form-control" id="ghiChuXuat" name="ghiChuXuat" placeholder="Ghi chú">
+                                    <input type="text" class="form-control" id="ghiChuXuat" name="ghiChuXuat"
+                                           placeholder="Ghi chú">
                                     <label style="font-size: 14px" for="ghiChuXuat">Ghi chú</label>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light border-top">
                                 <button type="submit" class="btn btn-primary btn-sm">Lưu</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                                    Hủy
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -455,22 +508,28 @@
                         <div class="modal-content border-0 rounded shadow-sm">
                             <div class="modal-header bg-white border-bottom">
                                 <h5 class="modal-title text-dark fw-semibold">Cập Nhật Số Lượng</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="soLuongMoi" name="soLuong" placeholder="Số lượng mới" min="0">
-                                    <label style="font-size: 14px" for="soLuongMoi">Số lượng mới <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="soLuongMoi" name="soLuong"
+                                           placeholder="Số lượng mới" min="0">
+                                    <label style="font-size: 14px" for="soLuongMoi">Số lượng mới <span
+                                            class="text-danger">*</span></label>
                                     <div class="invalid-feedback" id="soLuongSuaError"></div>
                                 </div>
                                 <div class="form-floating" style="padding-top: 10px">
-                                    <input type="text" class="form-control" id="ghiChuUpdate" name="ghiChuUpdate" placeholder="Ghi chú">
+                                    <input type="text" class="form-control" id="ghiChuUpdate" name="ghiChuUpdate"
+                                           placeholder="Ghi chú">
                                     <label style="font-size: 14px" for="ghiChuUpdate">Ghi chú</label>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light border-top">
                                 <button type="submit" class="btn btn-primary btn-sm">Lưu</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                                    Hủy
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -515,7 +574,9 @@
                             </div>
                         </div>
                         <div class="modal-footer bg-light border-top">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                                Đóng
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -528,17 +589,22 @@
                         <div class="modal-content border-0 rounded shadow-sm">
                             <div class="modal-header bg-white border-bottom">
                                 <h5 class="modal-title text-dark fw-semibold">Nhập Dữ Liệu Từ Excel</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating">
-                                    <input style="font-size: 14px" type="file" class="form-control" name="file" accept=".xlsx,.xls" >
-                                    <label style="font-size: 14px">Chọn file Excel <span class="text-danger">*</span></label>
+                                    <input style="font-size: 14px" type="file" class="form-control" name="file"
+                                           accept=".xlsx,.xls">
+                                    <label style="font-size: 14px">Chọn file Excel <span
+                                            class="text-danger">*</span></label>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light border-top">
                                 <button type="submit" class="btn btn-primary btn-sm">Tải Lên</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                                    Hủy
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -552,7 +618,8 @@
                         <div class="modal-content border-0 rounded shadow-sm">
                             <div class="modal-header bg-white border-bottom">
                                 <h5 class="modal-title text-dark fw-semibold">Thêm Sản Phẩm</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mb-3">
@@ -560,16 +627,20 @@
                                     <label for="tenSanPham">Tên sản phẩm <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select style="font-size: 14px" class="form-select" id="thuongHieu" name="thuongHieu" required>
+                                    <select style="font-size: 14px" class="form-select" id="thuongHieu"
+                                            name="thuongHieu" required>
                                         <option style="font-size: 14px" value="">-- Chọn thương hiệu --</option>
-                                        <option style="font-size: 14px" th:each="brand : ${listBrand}" th:value="${brand.id}" th:text="${brand.tenThuongHieu}"></option>
+                                        <option style="font-size: 14px" th:each="brand : ${listBrand}"
+                                                th:value="${brand.id}" th:text="${brand.tenThuongHieu}"></option>
                                     </select>
                                     <label for="thuongHieu">Thương hiệu <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select style="font-size: 14px" class="form-select" id="danhMuc" name="danhMuc" required>
+                                    <select style="font-size: 14px" class="form-select" id="danhMuc" name="danhMuc"
+                                            required>
                                         <option style="font-size: 14px" value="">-- Chọn danh mục --</option>
-                                        <option style="font-size: 14px" th:each="dm : ${listCategory}" th:value="${dm.id}" th:text="${dm.tenDanhMuc}"></option>
+                                        <option style="font-size: 14px" th:each="dm : ${listCategory}"
+                                                th:value="${dm.id}" th:text="${dm.tenDanhMuc}"></option>
                                     </select>
                                     <label for="danhMuc">Danh mục <span class="text-danger">*</span></label>
                                 </div>
@@ -590,21 +661,24 @@
                                     <label for="giaNhap">Giá nhập <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="soLuong" name="soLuong" min="0" required>
+                                    <input type="text" class="form-control" id="soLuong" name="soLuong" min="0"
+                                           required>
                                     <label for="soLuong">Số lượng <span class="text-danger">*</span></label>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light border-top">
                                 <button type="submit" class="btn btn-primary">Lưu</button>
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Modal thông báo -->
-            <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+            <!-- md thông abso -->
+            <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content border-0 rounded shadow-sm">
                         <div class="modal-header bg-white border-bottom">
@@ -615,7 +689,9 @@
                             <div id="notificationMessage" class="text-center"></div>
                         </div>
                         <div class="modal-footer bg-light border-top">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                                Đóng
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -626,11 +702,37 @@
                 <i class="fas fa-check-circle toast-icon"></i>
                 <span th:text="${successMessage}"></span>
             </div>
-
             <div th:if="${errorMessage}" class="custom-toast toast-error" id="toastError">
                 <i class="fas fa-exclamation-circle toast-icon"></i>
                 <span th:text="${errorMessage}"></span>
             </div>
+
+            <!-- modal xác nhận xóa-->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 rounded shadow-sm">
+                        <div class="modal-header bg-white border-bottom-0">
+                            <h5 class="modal-title fw-semibold text-dark" id="deleteModalLabel">Xác nhận xóa sản phẩm</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                        </div>
+                        <div class="modal-body text-center px-4">
+                            <p class="mb-0 text-secondary">
+                                Bạn có chắc chắn muốn xóa sản phẩm này không?
+                                <br>
+                                <small class="text-muted">Hành động này không thể hoàn tác.</small>
+                            </p>
+                        </div>
+                        <div class="modal-footer bg-light border-top-0 justify-content-center">
+                            <form id="deleteForm" th:action="@{/quan-ly/kho/xoa}" method="post" class="d-inline">
+                                <input type="hidden" id="xoa-id" name="id">
+                                <button type="submit" class="btn btn-primary btn-sm">Xóa</button>
+                            </form>
+                            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" data-bs-dismiss="modal">Hủy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -646,11 +748,11 @@
             const errorAlert = document.getElementById('errorAlert');
 
             if (successAlert) {
-                setTimeout(() => successAlert.style.display = 'none', 2000);
+                setTimeout(() => successAlert.style.display = 'none', 5000);
             }
 
             if (errorAlert) {
-                setTimeout(() => errorAlert.style.display = 'none', 2000);
+                setTimeout(() => errorAlert.style.display = 'none', 5000);
             }
         });
 
@@ -666,6 +768,13 @@
             btn.addEventListener("click", function () {
                 const id = btn.getAttribute("data-id");
                 document.getElementById("xuat-id").value = id;
+            });
+        });
+
+        document.querySelectorAll(".btn-xoa").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const id = btn.getAttribute("data-id");
+                document.getElementById("xoa-id").value = id;
             });
         });
 
@@ -709,7 +818,6 @@
             new bootstrap.Tooltip(el);
         });
 
-        // thông báo lỗi khi update, xuất, nhập
         const formNhap = document.getElementById('formNhap');
         const soLuongNhap = document.getElementById('soLuongNhap');
         const soLuongNhapError = document.getElementById('soLuongNhapError');
@@ -810,6 +918,13 @@
                     document.getElementById("nhap-id").value = btn.getAttribute("data-id");
                 });
             });
+
+            document.querySelectorAll(".btn-xoa").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    document.getElementById("xoa-id").value = btn.getAttribute("data-id");
+                });
+            });
+
             document.querySelectorAll(".btn-xuat").forEach(btn => {
                 btn.addEventListener("click", function () {
                     document.getElementById("xuat-id").value = btn.getAttribute("data-id");
@@ -902,7 +1017,6 @@
 
 
         // cảnh báo hàng ắp hết và gửi mail
-
 
 
     });
