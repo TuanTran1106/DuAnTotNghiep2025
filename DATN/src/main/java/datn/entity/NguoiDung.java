@@ -19,38 +19,16 @@ import java.util.Date;
 public class NguoiDung {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    @Column(name = "id")
+    private int id;
     @Column(name = "ho_ten")
-    private String hoTen;
-
-    @Column(name = "sdt")
-    private String sdt;
-
-    @Column(name = "gioi_tinh")
-    private Boolean gioiTinh;
-
+    private String hoten;
     @Column(name = "email")
     private String email;
-
-    @Column(name = "mat_khau")
-    private String matKhau;
-
+    @Column(name = "sdt")
+    private String sdt;
+    @Column(name = "gioi_tinh")
+    private boolean gioi_tinh;
     @Column(name = "hinh_anh")
-    private String hinhAnh;
-
-    @Column(name = "ngay_tao")
-    private LocalDate ngayTao;
-
-    @Column(name = "ngay_sua")
-    private LocalDate ngaySua;
-
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
-    private PhanQuyen phanQuyen;
-
-    public NguoiDung(int id) {
-        this.id = id;
-    }
-
+    private String hinhanh;
 }
