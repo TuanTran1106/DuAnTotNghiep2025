@@ -4,6 +4,7 @@ import datn.entity.GioHang;
 import datn.entity.NguoiDung;
 import datn.entity.SanPhamChiTiet;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface GioHangService {
@@ -16,4 +17,6 @@ public interface GioHangService {
     void giamSoLuong(int gioHangId);
 
     void xoaSanPham(int gioHangId);
+
+    BigDecimal tinhTongTien(List<GioHang> gioHang);
 }

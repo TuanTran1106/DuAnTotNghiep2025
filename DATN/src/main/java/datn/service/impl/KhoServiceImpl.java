@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,16 +43,17 @@ import java.util.UUID;
 @AllArgsConstructor
 public class KhoServiceImpl implements KhoService {
 
+    @Autowired
     private static final String UPLOAD_DIR = "src/main/resources/static/images/";
 
     private final KhoRepository khoRepository;
-
+    @Autowired
     private final ThuongHieuRepository thuongHieuRepository;
-
+    @Autowired
     private final DanhMucRepository danhMucRepository;
-
+    @Autowired
     private final LichSuKhoRepository lichSuKhoRepository;
-
+    @Autowired
     private final SanPhamRepository sanPhamRepository;
 
     private final SanPhamChiTietRepo sanPhamChiTietRepository;

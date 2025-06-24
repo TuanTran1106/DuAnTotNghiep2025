@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Watch Aura</title>
@@ -122,8 +122,6 @@
             color: var(--text-secondary);
             cursor: pointer;
         }
-
-        /*Sidebar Menu*/
         .sidebar-menu {
             position: fixed;
             left: -280px;
@@ -465,6 +463,27 @@
             font-weight: bold;
             text-transform: uppercase;
         }
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: var(--shadow-md);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        thead {
+            background-color: #444545;
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -480,19 +499,14 @@
         </div>
     </div>
 </div>
-<!-- Main Header -->
+
 <header class="header-main">
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <!-- Menu Toggle Button -->
             <button class="menu-toggle me-3" onclick="toggleMenu()">
                 <i class="fas fa-bars"></i>
             </button>
-
-            <!-- Brand -->
-            <a class="navbar-brand" href="#">WATCHAURA.com</a>
-
-            <!-- Main Navigation -->
+            <a class="navbar-brand" href="#">WATCHAURA.com| Quản lý tài khoản</a>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item dropdown">
@@ -513,8 +527,6 @@
                         <a class="nav-link" href="#">Xuất xứ</a>
                     </li>
                 </ul>
-
-                <!-- Search Box -->
                 <div class="search-box">
                     <input type="text" class="form-control" placeholder="Tìm kiếm...">
                     <button class="search-btn">
@@ -522,8 +534,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Mobile Menu Toggle -->
             <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -536,7 +546,7 @@
         <h5>MENU</h5>
     </div>
     <ul>
-        <li><a href="#"><i class="fas fa-user"></i> Tài khoản</a></li>
+        <li><a th:href="@{/nguoidung/detail/1}"><i class="fas fa-user"></i> Tài khoản</a></li>
         <li><a href="#"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a></li>
         <li><a href="#"><i class="fas fa-map-marker-alt"></i> Địa chỉ</a></li>
         <li><a href="#"><i class="fas fa-box"></i> Đơn hàng</a></li>
@@ -545,70 +555,64 @@
     </ul>
 </div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <h2>GIỎ HÀNG</h2>
 
-    <div class="alert-box">
-        <strong>⚠️ Lưu ý quan trọng:</strong> Vui lòng kiểm tra kỹ số lượng và loại sản phẩm trước khi tiến hành đặt hàng và thanh toán.
-    </div>
+<body>
+<div th:if="${successMessage}" style="color: green; font-weight: bold; text-align: center; margin-bottom: 20px;">
+    <p th:text="${successMessage}"></p>
+</div>
 
-
-<table>
-    <thead>
+<div id="addForm" style="
+  display: none;
+  width: 90%;
+  margin: 20px auto;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+">
+</div>
+<div id="successAlert" style="
+  display: none;
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  text-align: center;
+  margin: 20px auto;
+  width: 90%;
+  border-radius: 5px;
+  font-weight: bold;
+"></div>
+<table class="table table-bordered table-hover" style="width: 95%; margin: 20px auto; text-align: center;">
+    <thead class="table-dark">
     <tr>
-        <th>Hình ảnh</th>
-        <th>Tên sản phẩm</th>
-        <th>Đơn giá</th>
-        <th>Số lượng</th>
-        <th>Thành tiền</th>
-        <th>Thao tác</th>
+        <th>Ảnh đại diện</th>
+        <th>Họ và tên</th>
+        <th>Email</th>
+        <th>Số điện thoại</th>
+        <th>Giới tính</th>
+        <th>Hành động</th>
     </tr>
     </thead>
     <tbody>
-
-    <!-- Nếu giỏ hàng rỗng -->
-    <tr th:if="${#lists.isEmpty(gioHang)}">
-        <td colspan="6">Giỏ hàng đang trống</td>
-    </tr>
-
-    <!-- Nếu có sản phẩm trong giỏ -->
-    <tr th:each="item : ${gioHang}">
+    <tr th:each="nd : ${list}">
         <td>
-            <img th:src="@{${item.sanPhamChiTiet.sanPham.hinhAnh}}" alt="Ảnh sản phẩm">
+            <img th:src="@{'/images/' + ${nd.hinhanh}}" alt="Ảnh đại diện"
+                 style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
         </td>
-        <td th:text="${item.sanPhamChiTiet.sanPham.tenSanPham}">Tên sản phẩm</td>
-        <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.giaBan, 0, 'POINT', 0, 'COMMA')} + 'đ'">0đ</td>
+        <td th:text="${nd.hoten}"></td>
+        <td th:text="${nd.email}"></td>
+        <td th:text="${nd.sdt}"></td>
+        <td th:text="${nd.gioi_tinh ? 'Nam' : 'Nữ'}"></td>
         <td>
-            <form th:action="@{/gio-hang/giam}" method="post" style="display: inline;">
-                <input type="hidden" name="id" th:value="${item.id}">
-                <button type="submit">-</button>
-            </form>
-            <span th:text="${item.soLuong}">1</span>
-            <form th:action="@{/gio-hang/tang}" method="post" style="display: inline;">
-                <input type="hidden" name="id" th:value="${item.id}">
-                <button type="submit">+</button>
-            </form>
-        </td>
-        <td th:text="${#numbers.formatDecimal(item.soLuong * item.sanPhamChiTiet.giaBan, 0, 'POINT', 0, 'COMMA')} + 'đ'">0đ</td>
-        <td>
-            <form th:action="@{/gio-hang/xoa}" method="post">
-                <input type="hidden" name="id" th:value="${item.id}">
-                <button type="submit">Xóa</button>
-            </form>
+            <a th:href="@{|/nguoidung/detail/${nd.id}|}"
+               style="background-color:#3498db; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">
+                Chi tiết
+            </a>
         </td>
     </tr>
-
     </tbody>
 </table>
-
-    <div class="cart-total">
-        <p>Tổng tiền:
-            <span th:text="${#numbers.formatDecimal(tongTien, 0, 'POINT', 0, 'COMMA')} + 'đ'"></span>
-        </p>
-        <form th:action="@{/thanh-toan}" method="post">
-            <button type="submit" class="checkout-btn">THANH TOÁN</button>
-        </form>
-    </div>
-</div>
 <div class="top-features">
     <div class="container">
         <div class="row">
@@ -746,7 +750,6 @@
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function toggleMenu() {
         const sidebar = document.getElementById('sidebarMenu');
@@ -776,8 +779,6 @@
         const searchTerm = document.querySelector('.search-box input').value;
         alert('Tìm kiếm: ' + searchTerm);
     });
-
-    // Add click animation effect
     document.querySelectorAll('.blog-card').forEach(card => {
         card.addEventListener('click', function () {
             this.style.transform = 'scale(0.98)';
@@ -786,8 +787,6 @@
             }, 150);
         });
     });
-
-    // Add loading animation
     document.addEventListener('DOMContentLoaded', function () {
         const cards = document.querySelectorAll('.blog-card');
         cards.forEach((card, index) => {
@@ -803,10 +802,7 @@
     function handleNewsletterSubmit(event) {
         event.preventDefault();
         const email = event.target.querySelector('input[type="email"]').value;
-
-        // Simulate newsletter subscription
         if (email) {
-            // Add success animation
             const btn = event.target.querySelector('.newsletter-btn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-check"></i> Đã đăng ký';
@@ -817,8 +813,6 @@
                 btn.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
                 event.target.reset();
             }, 2000);
-
-            // Show success message
             alert('Cảm ơn bạn đã đăng ký nhận tin từ WatchAura!');
         }
     }
@@ -840,32 +834,9 @@
             observer.observe(section);
         });
     });
-
-    // function handleNewsletterSubmit(event) {
-    //     event.preventDefault();
-    //     const email = event.target.querySelector('.newsletter-input').value;
-    //
-    //     // Show success message
-    //     const button = event.target.querySelector('.newsletter-btn');
-    //     const originalText = button.innerHTML;
-    //
-    //     button.innerHTML = '<i class="fas fa-check me-1"></i>Đã đăng ký!';
-    //     button.style.background = 'linear-gradient(45deg, #4caf50, #45a049)';
-    //
-    //     setTimeout(() => {
-    //         button.innerHTML = originalText;
-    //         button.style.background = 'linear-gradient(45deg, #64b5f6, #42a5f5)';
-    //         event.target.reset();
-    //     }, 2000);
-    //
-    //     console.log('Newsletter subscription:', email);
-    // }
-
-    // Add smooth scroll to footer links
     document.querySelectorAll('.footer-section a[href^="#"]').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            // Add your scroll logic here
         });
     });
 </script>
