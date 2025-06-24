@@ -56,7 +56,6 @@ public class KhoServiceImpl implements KhoService {
 
     private final SanPhamChiTietRepo sanPhamChiTietRepository;
 
-    private final HinhAnhSanPham hinhAnhSanPham;
 
 
     @Override

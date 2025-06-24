@@ -6,11 +6,14 @@ import datn.entity.SanPham;
 import datn.entity.SanPhamChiTiet;
 import datn.entity.ThuongHieu;
 import datn.repository.DanhMucRepository;
+import datn.repository.KhoRepository;
+import datn.repository.SanPhamRepository;
 import datn.repository.ThuongHieuRepository;
 import datn.service.KhoService;
 import datn.service.LichSuKhoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,9 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/quan-ly/kho")
@@ -42,6 +43,7 @@ public class QuanLyKhoController {
     private final DanhMucRepository danhMucRepository;
     private final ThuongHieuRepository thuongHieuRepository;
     private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+    private final KhoRepository khoRepository;
 
 
     @GetMapping("")
@@ -50,7 +52,6 @@ public class QuanLyKhoController {
                        @RequestParam(value = "keyword", required = false) String keyword,
                        @RequestParam(value = "thuongHieu", required = false) Integer thuongHieuId,
                        @RequestParam(value = "danhMuc", required = false) Integer danhMucId,
-                       @RequestParam(value = "status", required = false) Integer trangThai,
                        Model model) {
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
@@ -110,45 +111,20 @@ public class QuanLyKhoController {
                              RedirectAttributes redirectAttributes) {
 
         try {
-            if (tenSanPham == null || tenSanPham.trim().isEmpty()) {
-                throw new IllegalArgumentException("Tên sản phẩm không được để trống!");
-            }
-            if (thuongHieuId == null) {
-                throw new IllegalArgumentException("Vui lòng chọn thương hiệu!");
-            }
-            if (danhMucId == null) {
-                throw new IllegalArgumentException("Vui lòng chọn danh mục!");
-            }
-            if (mauSac == null || mauSac.trim().isEmpty()) {
-                throw new IllegalArgumentException("Màu sắc không được để trống!");
-            }
-            if (kichThuoc == null || kichThuoc.trim().isEmpty()) {
-                throw new IllegalArgumentException("Kích thước không được để trống!");
-            }
-            if (chatLieu == null || chatLieu.trim().isEmpty()) {
-                throw new IllegalArgumentException("Chất liệu không được để trống!");
-            }
-            if (giaNhap == null || giaNhap.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new IllegalArgumentException("Giá nhập phải lớn hơn 0!");
-            }
-            if (soLuong == null || soLuong <= 0) {
-                throw new IllegalArgumentException("Số lượng phải lớn hơn 0!");
-            }
 
             Optional<ThuongHieu> thuongHieu = thuongHieuRepository.findById(thuongHieuId);
+
             Optional<DanhMuc> danhMuc = danhMucRepository.findById(danhMucId);
 
-            if (!thuongHieu.isPresent()) {
-                throw new IllegalArgumentException("Thương hiệu không tồn tại!");
-            }
-            if (!danhMuc.isPresent()) {
-                throw new IllegalArgumentException("Danh mục không tồn tại!");
-            }
+             khoRepository.existsByTenSanPhamAndThuongHieuAndDanhMuc(
+                    tenSanPham.trim(), thuongHieu.get(), danhMuc.get());
 
             String imageName = null;
             if (hinhAnh != null && !hinhAnh.isEmpty()) {
                 imageName = saveUploadedFile(hinhAnh);
             }
+
+
 
             SanPham sanPham = new SanPham();
             sanPham.setMaSanPham(generateProductCode());
@@ -175,8 +151,11 @@ public class QuanLyKhoController {
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Dữ liệu không hợp lệ hoặc bị trùng lặp!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+
         }
 
         return "redirect:/quan-ly/kho";
@@ -287,6 +266,7 @@ public class QuanLyKhoController {
     }
 
 
+    // tụ động gen mã sp
     private String generateProductCode() {
         return "SP" + System.currentTimeMillis();
     }
