@@ -1,8 +1,6 @@
 package datn.repository;
 
 import datn.entity.GioHang;
-import datn.entity.NguoiDung;
-import datn.entity.SanPhamChiTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface GioHangRepo extends JpaRepository<GioHang,Integer> {
-    List<GioHang> findByNguoiDung_Id(int nguoiDungId);
-    Optional<GioHang> findByNguoiDung_IdAndSanPhamChiTiet_Id(int idNguoiDung, int idSpct);
+
+    // ✅ Trả về 1 bản ghi duy nhất (nếu có), an toàn và không lỗi
+    Optional<GioHang> findFirstByNguoiDung_Id(Integer idNguoiDung);
+
+    // ✅ Nếu muốn lấy tất cả giỏ hàng của 1 người dùng (ít dùng)
+    List<GioHang> findByNguoiDung_Id(Integer nguoiDungId);
+
 }

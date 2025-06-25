@@ -59,4 +59,7 @@ public class DonHang {
     @ManyToOne
     @JoinColumn(name = "id_nhan_vien", referencedColumnName = "id")
     private NhanVien nhanVien;
+
+
+
 }
