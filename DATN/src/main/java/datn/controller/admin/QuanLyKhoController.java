@@ -226,7 +226,7 @@ public class QuanLyKhoController {
     private final LichSuKhoService lichSuKhoService;
     private final DanhMucRepository danhMucRepository;
     private final ThuongHieuRepository thuongHieuRepository;
-    private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+    private static final String UPLOAD_DIR = "C:\\Users\\admin\\Desktop\\img";
     private final KhoRepository khoRepository;
 
 
@@ -248,7 +248,9 @@ public class QuanLyKhoController {
 
         // toong giá trị ton trong kho
         BigDecimal totalPriceInSock = khoService.getTotalPriceInSock();
-        String formattedPrice = currencyFormat.format(totalPriceInSock);
+        String formattedPrice = (totalPriceInSock != null)
+                ? currencyFormat.format(totalPriceInSock)
+                : currencyFormat.format(BigDecimal.ZERO);
         model.addAttribute("totalPriceInSock", formattedPrice);
 
         // sản phẩm sắp hết
@@ -272,13 +274,12 @@ public class QuanLyKhoController {
         // danh mục
         model.addAttribute("listBrand", khoService.findAllBrandInSock());
 
-        //ls kho
+        // ls kho
         model.addAttribute("listHistoryInSock", lichSuKhoService.findAllHistoryInSock());
 
         model.addAttribute("newProduct", new KhoDto());
 
         return "admin/quan-ly-kho";
-
     }
 
 

@@ -43,8 +43,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class KhoServiceImpl implements KhoService {
 
-    @Autowired
-    private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+    private static final String UPLOAD_DIR = "src/main/resources/images/";
 
     private final KhoRepository khoRepository;
     @Autowired
@@ -278,7 +277,7 @@ public class KhoServiceImpl implements KhoService {
                     Double soLuongDouble = getCellNumericValue(row.getCell(5));
                     String tenThuongHieu = getCellStringValue(row.getCell(6));
                     String tenDanhMuc = getCellStringValue(row.getCell(7));
-                    String hinhAnhUrl = getCellStringValue(row.getCell(8)); // URL hoặc tên file ảnh
+                    String hinhAnhUrl = getCellStringValue(row.getCell(8));
 
                     if (tenSp == null || tenSp.trim().isEmpty()) rowErrors.add("Tên Sản Phẩm trống");
                     if (mauSac == null || mauSac.trim().isEmpty()) rowErrors.add("Màu Sắc trống");
@@ -303,7 +302,6 @@ public class KhoServiceImpl implements KhoService {
                         try {
                             savedImageName = downloadAndSaveImage(hinhAnhUrl.trim(), tenSp);
                         } catch (Exception e) {
-                            System.out.println("Không thể tải ảnh cho sản phẩm: " + tenSp + ". Lỗi: " + e.getMessage());
                             savedImageName = null;
                         }
                     }
@@ -386,9 +384,14 @@ public class KhoServiceImpl implements KhoService {
             throw new RuntimeException("Lỗi đọc file Excel: " + e.getMessage(), e);
         }
     }
-    private String downloadAndSaveImage(String imageUrl, String productName) throws IOException {
-        if (!imageUrl.startsWith("http://") && !imageUrl.startsWith("https://")) {
-            return imageUrl;
+
+    private String downloadAndSaveImage(String imageFieldValue, String productName) throws IOException {
+        if (imageFieldValue == null || imageFieldValue.isBlank()) {
+            return null;
+        }
+
+        if (!imageFieldValue.startsWith("http://") && !imageFieldValue.startsWith("https://")) {
+            return imageFieldValue;
         }
 
         Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -396,16 +399,17 @@ public class KhoServiceImpl implements KhoService {
             Files.createDirectories(uploadPath);
         }
 
-        String extension = getFileExtensionFromUrl(imageUrl);
+        String extension = getFileExtensionFromUrl(imageFieldValue);
         String uniqueFilename = UUID.randomUUID().toString() + extension;
         Path filePath = uploadPath.resolve(uniqueFilename);
 
-        try (InputStream inputStream = new URL(imageUrl).openStream()) {
+        try (InputStream inputStream = new URL(imageFieldValue).openStream()) {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
 
         return uniqueFilename;
     }
+
 
     private String getFileExtensionFromUrl(String url) {
         try {
@@ -419,7 +423,7 @@ public class KhoServiceImpl implements KhoService {
             }
         } catch (Exception e) {
         }
-        return ".jpg"; // Default extension
+        return ".jpg";
     }
 
     private String getCellStringValue(Cell cell) {

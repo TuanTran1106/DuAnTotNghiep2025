@@ -1,8 +1,6 @@
 package datn.service.impl;
 
 import datn.entity.GioHang;
-import datn.entity.NguoiDung;
-import datn.entity.SanPhamChiTiet;
 import datn.repository.GioHangRepo;
 import datn.repository.NguoiDungRepo;
 import datn.repository.SanPhamChiTietRepo;

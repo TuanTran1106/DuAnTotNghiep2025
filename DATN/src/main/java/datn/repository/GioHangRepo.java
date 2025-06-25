@@ -1,8 +1,6 @@
 package datn.repository;
 
 import datn.entity.GioHang;
-import datn.entity.NguoiDung;
-import datn.entity.SanPhamChiTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

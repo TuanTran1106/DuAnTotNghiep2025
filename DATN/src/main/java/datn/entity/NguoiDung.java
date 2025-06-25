@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -19,16 +17,38 @@ import java.util.Date;
 public class NguoiDung {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    private Integer id;
+
     @Column(name = "ho_ten")
-    private String hoten;
-    @Column(name = "email")
-    private String email;
+    private String hoTen;
+
     @Column(name = "sdt")
     private String sdt;
+
     @Column(name = "gioi_tinh")
-    private boolean gioi_tinh;
+    private Boolean gioiTinh;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "mat_khau")
+    private String matKhau;
+
     @Column(name = "hinh_anh")
-    private String hinhanh;
+    private String hinhAnh;
+
+    @Column(name = "ngay_tao")
+    private LocalDate ngayTao;
+
+    @Column(name = "ngay_sua")
+    private LocalDate ngaySua;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    private PhanQuyen phanQuyen;
+
+    public NguoiDung(int id) {
+        this.id = id;
+    }
+
 }
