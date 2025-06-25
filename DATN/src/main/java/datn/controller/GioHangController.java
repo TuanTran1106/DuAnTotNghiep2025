@@ -35,7 +35,7 @@ public class GioHangController {
     @GetMapping
     public String xemGioHang(Model model) {
         int nguoiDungId = 1;
-       // hardcoded cho ví dụ
+
         List<GioHang> gioHang = gioHangRepo.findByNguoiDung_Id(nguoiDungId);
         BigDecimal tongTien = gioHangService.tinhTongTien(gioHang);
         model.addAttribute("gioHang", gioHang);

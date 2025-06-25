@@ -1,7 +1,8 @@
 package datn.controller;
 
-import com.example.nhanvien.Model.nhan_vien;
-import com.example.nhanvien.Repository.NhanvienRepository;
+
+import datn.entity.nhan_vien;
+import datn.repository.NhanvienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
