@@ -1,8 +1,9 @@
 package datn.repository;
 
 
-import datn.entity.nhan_vien;
+
+import datn.entity.NhanVien;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface NhanvienRepository extends JpaRepository<nhan_vien,Integer> {
+public interface NhanvienRepository extends JpaRepository<NhanVien,Integer> {
 }

@@ -1,6 +1,7 @@
+package datn.controller;
 
 import datn.entity.DonHang;
-import datn.entity.nhan_vien;
+import datn.entity.NhanVien;
 import datn.repository.ChiTietDonHangRepository;
 import datn.repository.DonHangRepository;
 import datn.repository.NhanvienRepository;
@@ -23,13 +24,13 @@ public class Controller {
     private ChiTietDonHangRepository chiTietDonHangRepository;
     @GetMapping("/mango")
     public String hienThi(Model model) {
-        List<nhan_vien> list = nhanVienRepository.findAll();
-        model.addAttribute("nhanvien", new nhan_vien());
+        List<NhanVien> list = nhanVienRepository.findAll();
+        model.addAttribute("nhanvien", new NhanVien());
         model.addAttribute("list", list);
         return "nhanvien.html";
     }
     @PostMapping("/mango/save")
-    public String addNhanVien(@Validated @ModelAttribute("nhanvien") nhan_vien nhanVien,
+    public String addNhanVien(@Validated @ModelAttribute("nhanvien") NhanVien nhanVien,
                               BindingResult result,
                               Model model) {
         if (result.hasErrors()) {
@@ -56,14 +57,14 @@ public class Controller {
     }
     @GetMapping("/nhanvien/detail/{id}")
     public String detailNhanVien(Model model, @PathVariable("id") Integer id) {
-        nhan_vien nhanVien = nhanVienRepository.findById(id).orElse(null);
+        NhanVien nhanVien = nhanVienRepository.findById(id).orElse(null);
         model.addAttribute("nhanvien", nhanVien);
-        List<nhan_vien> list = nhanVienRepository.findAll();
+        List<NhanVien> list = nhanVienRepository.findAll();
         model.addAttribute("list", list);
         return "detail.html";
     }
     @PostMapping("/nhanvien/update")
-    public String updateNhanVien(@Validated @ModelAttribute("nhanvien") nhan_vien nhanVien,
+    public String updateNhanVien(@Validated @ModelAttribute("nhanvien") NhanVien nhanVien,
                                  BindingResult result,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
