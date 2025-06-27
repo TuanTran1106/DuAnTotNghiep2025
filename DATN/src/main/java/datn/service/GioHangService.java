@@ -1,13 +1,12 @@
 package datn.service;
 
 import datn.entity.GioHang;
-import datn.entity.NguoiDung;
-import datn.entity.SanPhamChiTiet;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface GioHangService {
+
     List<GioHang> layGioHangTheoNguoiDung(int nguoiDungId);
 
     void themSanPhamVaoGio(int nguoiDungId, int idSanPhamChiTiet);

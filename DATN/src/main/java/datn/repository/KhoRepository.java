@@ -1,7 +1,9 @@
 package datn.repository;
 
 import datn.dto.KhoDto;
+import datn.entity.DanhMuc;
 import datn.entity.SanPhamChiTiet;
+import datn.entity.ThuongHieu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -77,6 +79,13 @@ public interface KhoRepository extends JpaRepository<SanPhamChiTiet,Integer> {
     @Query("SELECT sp FROM SanPhamChiTiet sp WHERE sp.sanPham.tenSanPham = :tenSanPham AND sp.mauSac = :mauSac AND sp.kichThuoc = :kichThuoc")
     SanPhamChiTiet findBySanPham_TenSanPhamAndMauSacAndKichThuoc(@Param("tenSanPham") String tenSanPham, @Param("mauSac") String mauSac, @Param("kichThuoc") String kichThuoc);
 
-//    Collection<Object> findBySoLuongLessThanEqual(int lowStockThreshold);
+    @Query("SELECT COUNT(sp) > 0 FROM SanPham sp WHERE " +
+            "LOWER(TRIM(sp.tenSanPham)) = LOWER(TRIM(:tenSanPham)) AND " +
+            "sp.thuongHieu = :thuongHieu AND sp.danhMuc = :danhMuc AND sp.trangThai = 1")
+    boolean existsByTenSanPhamAndThuongHieuAndDanhMuc(
+            @Param("tenSanPham") String tenSanPham,
+            @Param("thuongHieu") ThuongHieu thuongHieu,
+            @Param("danhMuc") DanhMuc danhMuc
+    );
 }
 

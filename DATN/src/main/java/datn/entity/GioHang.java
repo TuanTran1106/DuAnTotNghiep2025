@@ -28,7 +28,7 @@ public class GioHang {
     private LocalDateTime ngayThem;
 
     @Column(name = "so_luong")
-    private int soLuong;
+    private Integer soLuong;
 
     @ManyToOne
     @JoinColumn(name = "id_nguoi_dung", referencedColumnName = "id")
