@@ -1,7 +1,9 @@
-package datn.controller;
 
-import com.example.nhanvien.Model.nhan_vien;
-import com.example.nhanvien.Repository.NhanvienRepository;
+import datn.entity.DonHang;
+import datn.entity.nhan_vien;
+import datn.repository.ChiTietDonHangRepository;
+import datn.repository.DonHangRepository;
+import datn.repository.NhanvienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,10 +14,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
-public class NhanVienController {
+public class Controller {
     @Autowired
     private NhanvienRepository nhanVienRepository;
-
+    @Autowired
+    private DonHangRepository donHangRepository;
+    @Autowired
+    private ChiTietDonHangRepository chiTietDonHangRepository;
     @GetMapping("/mango")
     public String hienThi(Model model) {
         List<nhan_vien> list = nhanVienRepository.findAll();
@@ -23,7 +28,6 @@ public class NhanVienController {
         model.addAttribute("list", list);
         return "nhanvien.html";
     }
-
     @PostMapping("/mango/save")
     public String addNhanVien(@Validated @ModelAttribute("nhanvien") nhan_vien nhanVien,
                               BindingResult result,
@@ -34,26 +38,30 @@ public class NhanVienController {
         }
         nhanVienRepository.save(nhanVien);
         return "redirect:/mango";
-
     }
 
     @GetMapping("/nhanvien/xoa/{id}")
-    public String xoaNhanVien(@PathVariable("id") Integer id) {
-        nhanVienRepository.deleteById(id);
+    public String xoaNhanVien(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            List<DonHang> donHangs = donHangRepository.findByNhanVienId(id);
+            List<Integer> donHangIds = donHangs.stream().map(DonHang::getId).toList();
+            chiTietDonHangRepository.deleteByDonHangIds(donHangIds);
+            donHangRepository.deleteAll(donHangs);
+            nhanVienRepository.deleteById(id);
+            redirectAttributes.addFlashAttribute("success", "Xóa nhân viên và các dữ liệu liên quan thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa: " + e.getMessage());
+        }
         return "redirect:/mango";
     }
-
     @GetMapping("/nhanvien/detail/{id}")
     public String detailNhanVien(Model model, @PathVariable("id") Integer id) {
         nhan_vien nhanVien = nhanVienRepository.findById(id).orElse(null);
         model.addAttribute("nhanvien", nhanVien);
-
         List<nhan_vien> list = nhanVienRepository.findAll();
         model.addAttribute("list", list);
-
         return "detail.html";
     }
-
     @PostMapping("/nhanvien/update")
     public String updateNhanVien(@Validated @ModelAttribute("nhanvien") nhan_vien nhanVien,
                                  BindingResult result,
@@ -67,26 +75,4 @@ public class NhanVienController {
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
         return "redirect:/mango";
     }
-
-    @GetMapping("/mango/search")
-    public String timKiemNhanVien(
-            @RequestParam(value = "hoten", required = false) String hoten,
-            @RequestParam(value = "email", required = false) String email,
-            @RequestParam(value = "sdt", required = false) String sdt,
-            @RequestParam(value = "dia_chi", required = false) String dia_chi,
-            Model model) {
-
-        List<nhan_vien> result = nhanVienRepository.findAll().stream()
-                .filter(nv ->
-                        (hoten == null || hoten.isEmpty() || nv.getHoten().toLowerCase().contains(hoten.toLowerCase())) &&
-                                (email == null || email.isEmpty() || nv.getEmail().toLowerCase().contains(email.toLowerCase())) &&
-                                (sdt == null || sdt.isEmpty() || nv.getSdt().toLowerCase().contains(sdt.toLowerCase())) &&
-                                (dia_chi == null || dia_chi.isEmpty() || nv.getDia_chi().toLowerCase().contains(dia_chi.toLowerCase())))
-                .toList();
-
-        model.addAttribute("nhanvien", new nhan_vien());
-        model.addAttribute("list", result);
-        return "nhanvien.html";
-    }
-
 }

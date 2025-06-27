@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản Lý Đơn Hàng - Đồng Hồ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #e9ecef;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            padding: 2rem;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .nav-filter {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 1rem;
+            min-width: 300px;
+        }
+
+        .summary-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            flex: 1;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            transition: box-shadow 0.3s, transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .order-status {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 0 8px 0 8px;
+        }
+
+        .btn-custom {
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #1e3a8a;
+            border-color: #1e3a8a;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e40af;
+            border-color: #1e40af;
+        }
+
+        .btn-outline-secondary {
+            border-color: #6b7280;
+            color: #6b7280;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #6b7280;
+            color: #ffffff;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .modal-footer {
+            background-color: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            transition: border-color 0.3s;
+            font-size: 14px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .pagination .page-link {
+            border-radius: 6px;
+            margin: 0 4px;
+            color: #1e3a8a;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #1e3a8a;
+            border-color: #1e3a8a;
+            color: #ffffff;
+        }
+
+        .custom-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 280px;
+            max-width: 400px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 3s forwards;
+        }
+
+        .toast-success {
+            background-color: #ffffff;
+            color: #218838;
+            border-left: 4px solid #218838;
+        }
+
+        .toast-error {
+            background-color: #ffffff;
+            color: red;
+            border-left: 4px solid red;
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .no-data {
+            color: rgba(107, 114, 128, 0.6);
+            font-style: italic;
+            font-size: 1rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .no-data i {
+            opacity: 0.6;
+            vertical-align: middle;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3a8a;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+<div class="navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="navbar-brand">Quản Lý Đơn Hàng</span>
+        <div class="d-flex gap-2 align-items-center">
+            <div class="nav-filter">
+                <button class="btn btn-custom btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-funnel me-1"></i> Bộ Lọc
+                </button>
+                <div class="dropdown-menu">
+                    <form th:action="@{/quan-ly/don-hang}" method="get">
+                        <div class="mb-3">
+                            <label class="form-label text-sm font-medium">Mã Đơn Hàng</label>
+                            <input type="text" class="form-control" name="maDonHang" placeholder="VD: DH001">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-sm font-medium">Khách Hàng</label>
+                            <input type="text" class="form-control" name="khachHang" placeholder="Tên khách hàng">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-sm font-medium">Trạng Thái</label>
+                            <select class="form-select" name="trangThai">
+                                <option value="">-- Tất cả --</option>
+                                <option th:each="status : ${listStatus}" th:value="${status}" th:text="${status}"></option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-custom">Lọc</button>
+                            <a href="/quan-ly/don-hang" class="btn btn-outline-secondary btn-custom">Reset</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <button class="btn btn-custom btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exportModal">
+                <i class="bi bi-file-earmark-arrow-down me-1"></i> Xuất Excel
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Summary Cards -->
+    <div class="summary-row">
+        <div class="summary-card">
+            <span class="text-sm font-medium text-gray-600">Tổng Đơn Hàng</span>
+            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${totalOrders}"></p>
+        </div>
+        <div class="summary-card">
+            <span class="text-sm font-medium text-gray-600">Chờ Xử Lý</span>
+            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${pendingOrders}"></p>
+        </div>
+        <div class="summary-card">
+            <span class="text-sm font-medium text-gray-600">Tổng Doanh Thu</span>
+            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></p>
+        </div>
+        <div class="summary-card">
+            <span class="text-sm font-medium text-gray-600">Đơn Hàng Hủy</span>
+            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${canceledOrders}"></p>
+        </div>
+    </div>
+
+    <!-- Orders Grid -->
+    <div th:if="${listOrders.isEmpty()}" class="no-data">
+        <i class="bi bi-database fs-5 me-2"></i>
+        <em>Không có đơn hàng nào...</em>
+    </div>
+    <div class="order-grid" th:unless="${listOrders.isEmpty()}">
+        <div th:each="order,stat : ${listOrders}" class="order-card">
+            <span th:class="${order.trangThai == 'Hủy' ? 'order-status bg-red-100 text-red-600' : order.trangThai == 'Chờ xử lý' ? 'order-status bg-yellow-100 text-yellow-600' : 'order-status bg-green-100 text-green-600'}" th:text="${order.trangThai}"></span>
+            <h5 class="font-semibold text-gray-900 mb-2" th:text="'#' + ${order.maDonHang}"></h5>
+            <p class="text-sm text-gray-600 mb-1"><strong>Khách Hàng:</strong> <span th:text="${order.khachHang.hoTen}"></span></p>
+            <p class="text-sm text-gray-600 mb-1"><strong>Ngày Đặt:</strong> <span th:text="${#temporals.format(order.ngayDat, 'dd/MM/yyyy HH:mm')}"></span></p>
+            <p class="text-sm text-gray-600 mb-3"><strong>Tổng Tiền:</strong> <span th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span></p>
+            <div class="d-flex gap-2">
+                <button class="btn btn-custom btn-outline-secondary btn-chi-tiet" th:attr="data-id=${order.id}" data-bs-toggle="modal" data-bs-target="#detailModal">
+                    <i class="bi bi-eye me-1"></i> Chi Tiết
+                </button>
+                <button class="btn btn-custom btn-outline-secondary btn-cap-nhat" th:attr="data-id=${order.id}" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
+                    <i class="bi bi-pencil me-1"></i> Cập Nhật
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- phan trang -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/quan-ly/don-hang(page=${startPage - 1})}">«</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}" th:classappend="${i == startPage} ? 'active'">
+                <a class="page-link" th:href="@{/quan-ly/don-hang(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${startPage == totalPage - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/quan-ly/don-hang(page=${startPage + 1})}">»</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- modal don hang chi tiet -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">Chi Tiết Đơn Hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Mã Đơn Hàng:</strong> <span id="detail-maDonHang"></span></p>
+                        <p><strong>Khách Hàng:</strong> <span id="detail-khachHang"></span></p>
+                        <p><strong>Ngày Đặt:</strong> <span id="detail-ngayDat"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tổng Tiền:</strong> <span id="detail-tongTien"></span></p>
+                        <p><strong>Trạng Thái:</strong> <span id="detail-trangThai"></span></p>
+                        <p><strong>Ghi Chú:</strong> <span id="detail-ghiChu"></span></p>
+                    </div>
+                </div>
+                <h6 class="font-semibold mb-2">Sản Phẩm Đặt Hàng</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-sm text-center">
+                        <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Số Lượng</th>
+                            <th>Đơn Giá</th>
+                            <th>Thành Tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody id="detail-items">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal update status -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateStatusModalLabel">Cập Nhật Trạng Thái</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/quan-ly/don-hang/cap-nhat}" id="formUpdateStatus">
+                    <input type="hidden" name="id" id="update-id">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="trangThai" name="trangThai" required>
+                            <option value="">-- Chọn trạng thái --</option>
+                            <option th:each="status : ${listStatus}" th:value="${status}" th:text="${status}"></option>
+                        </select>
+                        <label for="trangThai">Trạng Thái <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="ghiChu" name="ghiChu" placeholder="Ghi chú">
+                        <label for="ghiChu">Ghi chú</label>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-custom">Lưu</button>
+                        <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal export -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportModalLabel">Xuất Dữ Liệu Đơn Hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/quan-ly/don-hang/export}">
+                    <p>Xuất danh sách đơn hàng dưới dạng file Excel.</p>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-custom">Xuất File</button>
+                        <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notifications -->
+<div th:if="${successMessage}" class="custom-toast toast-success" id="toastSuccess">
+    <i class="fas fa-check-circle me-2"></i>
+    <span th:text="${successMessage}"></span>
+</div>
+<div th:if="${errorMessage}" class="custom-toast toast-error" id="toastError">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    <span th:utext="${errorMessage.length() > 100 ? (errorMessage.substring(0, 100) + '... <a href=\'#\' data-bs-toggle=\'modal\' data-bs-target=\'#errorDetailModal\'>Xem chi tiết</a>') : errorMessage}"></span>
+</div>
+
+<!-- Modal: Detailed Error -->
+<div class="modal fade" id="errorDetailModal" tabindex="-1" aria-labelledby="errorDetailModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorDetailModalLabel">Chi Tiết Lỗi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <p th:utext="${errorMessage != null ? #strings.replace(errorMessage, ';', '<br>') : ''}"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    document.querySelectorAll('.btn-chi-tiet').forEach(button => {
+        button.addEventListener('click', () => {
+            const id = button.dataset.id;
+            document.getElementById('detail-maDonHang').textContent = 'DH' + id.padStart(4, '0');
+        });
+    });
+
+    document.querySelectorAll('.btn-cap-nhat').forEach(button => {
+        button.addEventListener('click', () => {
+            const id = button.dataset.id;
+            document.getElementById('update-id').value = id;
+        });
+    });
+</script>
+</body>
+</html>

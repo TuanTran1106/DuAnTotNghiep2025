@@ -1,6 +1,5 @@
-package datn.controller;
-import com.example.nhanvien.Model.nguoi_dung;
-import com.example.nhanvien.Repository.NguoidungRepository;
+
+import datn.repository.NguoidungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,35 +31,22 @@ public class NguoidungController {
                                   RedirectAttributes redirectAttributes) {
         try {
             if (!file.isEmpty()) {
-                // Tạo tên file duy nhất
                 String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-
-                // Đường dẫn thư mục
-                Path uploadPath = Paths.get("D:/watchaura/uploads/");  // đổi theo đường dẫn của bạn
-
+                Path uploadPath = Paths.get("D:/watchaura/uploads/");
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
-
-                // Ghi file vào thư mục
                 file.transferTo(uploadPath.resolve(filename));
-
-                // Lưu tên file vào DB
                 nguoidung.setHinhanh(filename);
             }
-
             nguoi_dungRepository.save(nguoidung);
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
-
         } catch (IOException e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi upload ảnh!");
         }
-
         return "redirect:/mango";
     }
-
-
     @GetMapping("/nguoidung/detail/{id}")
     public String detailNguoiDung(Model model, @PathVariable("id") Integer id) {
         nguoi_dung nguoidung = nguoi_dungRepository.findById(id).orElse(null);
