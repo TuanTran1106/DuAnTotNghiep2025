@@ -1,5 +1,6 @@
 
-import datn.repository.NguoidungRepository;
+import datn.entity.NguoiDung;
+import datn.repository.NguoiDungRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,17 +17,17 @@ import java.util.List;
 @Controller
 public class NguoidungController {
     @Autowired
-    private NguoidungRepository nguoi_dungRepository;
+    private NguoiDungRepo nguoi_dungRepository;
 
     @GetMapping("/nguoidung")
     public String hienThi(Model model) {
-        List<nguoi_dung> list = nguoi_dungRepository.findAll();
-        model.addAttribute("nguoidung", new nguoi_dung());
+        List<NguoiDung> list = nguoi_dungRepository.findAll();
+        model.addAttribute("nguoidung", new NguoiDung());
         model.addAttribute("list", list);
         return "nguoidung.html";
     }
     @PostMapping("/nguoidung/update")
-    public String updateNguoiDung(@ModelAttribute("nguoidung") nguoi_dung nguoidung,
+    public String updateNguoiDung(@ModelAttribute("nguoidung") NguoiDung nguoidung,
                                   @RequestParam("file") MultipartFile file,
                                   RedirectAttributes redirectAttributes) {
         try {
@@ -37,7 +38,7 @@ public class NguoidungController {
                     Files.createDirectories(uploadPath);
                 }
                 file.transferTo(uploadPath.resolve(filename));
-                nguoidung.setHinhanh(filename);
+                nguoidung.setHinhAnh(filename);
             }
             nguoi_dungRepository.save(nguoidung);
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
@@ -49,10 +50,9 @@ public class NguoidungController {
     }
     @GetMapping("/nguoidung/detail/{id}")
     public String detailNguoiDung(Model model, @PathVariable("id") Integer id) {
-        nguoi_dung nguoidung = nguoi_dungRepository.findById(id).orElse(null);
+        NguoiDung nguoidung = nguoi_dungRepository.findById(id).orElse(null);
         model.addAttribute("nguoidung", nguoidung);
-
-        List<nguoi_dung> list = nguoi_dungRepository.findAll();
+        List<NguoiDung> list = nguoi_dungRepository.findAll();
         model.addAttribute("list", list);
         return "detailND.html";
     }
