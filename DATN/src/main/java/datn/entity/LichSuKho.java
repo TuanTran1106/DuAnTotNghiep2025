@@ -28,7 +28,7 @@ public class LichSuKho {
 
     @ManyToOne
     @JoinColumn(name = "id_nhan_vien")
-    private nhan_vien nhanVien;
+//    private nhan_vien nhanVien;
 
     private String loai;
 
