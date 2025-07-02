@@ -1,4 +1,3 @@
-package datn.controller;
 
 import datn.entity.DonHang;
 import datn.entity.NhanVien;
@@ -15,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
-public class Controller {
+public class NhanvienController {
     @Autowired
     private NhanvienRepository nhanVienRepository;
     @Autowired
