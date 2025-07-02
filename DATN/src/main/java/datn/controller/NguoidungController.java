@@ -29,6 +29,7 @@ public class NguoidungController {
     @PostMapping("/nguoidung/update")
     public String updateNguoiDung(@ModelAttribute("nguoidung") NguoiDung nguoidung,
                                   @RequestParam("file") MultipartFile file,
+
                                   RedirectAttributes redirectAttributes) {
         try {
             if (!file.isEmpty()) {
@@ -46,7 +47,7 @@ public class NguoidungController {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi upload ảnh!");
         }
-        return "redirect:/mango";
+        return "redirect:/nguoidung/detail/" + nguoidung.getId();
     }
     @GetMapping("/nguoidung/detail/{id}")
     public String detailNguoiDung(Model model, @PathVariable("id") Integer id) {

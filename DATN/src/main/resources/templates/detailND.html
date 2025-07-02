@@ -563,6 +563,12 @@
 </div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <div class="form-container">
+    <div th:if="${successMessage}" class="alert alert-success" style="margin-bottom: 15px;">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" style="margin-bottom: 15px;">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <h2>Hồ Sơ Của Tôi</h2>
     <p class="subtitle">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
 
@@ -595,9 +601,11 @@
             <div class="form-right">
                 <div class="avatar-preview">
                     <img th:src="@{${nguoidung.hinhanh != null} ? ${'/images/' + nguoidung.hinhanh} : '/images/default-avatar.png'}" alt="Avatar">
+                </div >
+                <div style="text-align: center">
+                    <label >Thay đổi avatar</label>
                 </div>
-                <label>Thay đổi avatar</label>
-                <div class="form-group">
+                <div class="form-group" >
                     <input type="file" name="file">
                 </div>
             </div>
