@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Watch Aura - Quản lý Địa chỉ</title>
+    <!-- Thư viện ngoài -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS Chung -->
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <!-- CSS Riêng cho trang Địa chỉ -->
+    <link rel="stylesheet" th:href="@{/css/address.css}">
+</head>
+
+<body class="bg-light">
+
+<!-- =================================================================
+     HEADER
+================================================================== -->
+<div class="header-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <span><i class="fas fa-phone"></i> HOTLINE: 0123456789</span>
+            </div>
+            <div class="col-md-6 text-end">
+                <span><i class="fas fa-shipping-fast"></i> HỆ THỐNG CỬA HÀNG</span>
+            </div>
+        </div>
+    </div>
+</div>
+<header class="header-main">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <button class="menu-toggle me-3" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="#">WATCHAURA.com</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Thương hiệu</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Casio</a></li>
+                            <li><a class="dropdown-item" href="#">Orient</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Danh mục</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Xuất xứ</a></li>
+                </ul>
+                <div class="search-box">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header"><h5>MENU</h5></div>
+    <ul>
+        <li><a href="#"><i class="fas fa-user"></i> Tài khoản</a></li>
+        <li><a href="#"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a></li>
+        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Địa chỉ</a></li>
+        <li><a href="#"><i class="fas fa-box"></i> Đơn hàng</a></li>
+        <li><a href="#"><i class="fas fa-percentage"></i> Khuyến mại</a></li>
+        <li><a href="#"><i class="fas fa-phone"></i> Liên hệ CSKH</a></li>
+    </ul>
+</div>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+
+<!-- =================================================================
+     NỘI DUNG CHÍNH - QUẢN LÝ ĐỊA CHỈ
+================================================================== -->
+<div class="container py-4">
+
+    <!-- Toast thông báo ở góc trên bên phải -->
+    <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 1080; min-width: 350px;">
+        <div th:if="${successMessage}" class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${successMessage}"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        <div th:if="${errorMessage}" class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${errorMessage}"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header và nút thêm -->
+    <div class="address-header-adv">
+        <h1>🚚 Địa chỉ giao hàng</h1>
+        <button type="button" class="add-address-btn-adv" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+            <i class="fas fa-plus"></i> Thêm địa chỉ mới
+        </button>
+    </div>
+
+    <!-- Danh sách địa chỉ -->
+    <div>
+        <div th:if="${#lists.isEmpty(diaChiList)}" class="text-center py-5">
+            <i class="fas fa-truck fa-3x text-gray-400 mb-3"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">Chưa có địa chỉ giao hàng</h3>
+            <p class="text-gray-500">Hãy thêm địa chỉ giao hàng đầu tiên</p>
+        </div>
+        <div th:each="diaChi : ${diaChiList}" class="address-card-adv [[${diaChi.macDinh} ? 'address-default-ring' : '']]" th:attr="data-id-nguoi-dung=${diaChi.idNguoiDung}">
+            <div class="address-card-adv-main">
+                <div class="address-type">
+                    <span class="address-type-label">Địa chỉ giao hàng</span>
+                    <span th:if="${diaChi.macDinh}" class="address-default-badge">
+                        <i class="fas fa-star"></i> Mặc định
+                    </span>
+                </div>
+                <div class="address-actions-adv">
+                    <button th:if="!${diaChi.macDinh}" class="btn-set-default" th:onclick="setDefaultAddress([[${diaChi.id}]])">Đặt mặc định</button>
+                    <button class="btn-edit-adv" th:attr="data-id=${diaChi.id}" th:onclick="editAddress(this)">
+                        <i class="fas fa-pen"></i> Sửa
+                    </button>
+                    <form th:action="@{/dia-chi/delete/{id}(id=${diaChi.id})}" method="post" style="display: inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')">
+                        <button type="submit" class="btn-delete-adv">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="address-info-adv">
+                <div class="address-name-adv" th:text="${diaChi.nguoiDung != null ? diaChi.nguoiDung.hoTen : 'ID: ' + diaChi.idNguoiDung}"></div>
+                <div class="address-phone-adv" th:if="${diaChi.nguoiDung != null}"><i class="fas fa-phone"></i> <span th:text="${diaChi.nguoiDung.sdt}"></span></div>
+                <div class="address-detail-adv"><i class="fas fa-map-marker-alt"></i> <span th:text="${diaChi.diaChi}"></span></div>
+                <div class="address-district-adv" th:text="${diaChi.phuongXa + ', ' + diaChi.quanHuyen + ', ' + diaChi.thanhPho}"></div>
+                <div class="address-date-adv"><i class="fas fa-clock"></i> <span th:text="${diaChi.ngayTao != null ? #temporals.format(diaChi.ngayTao, 'dd/MM/yyyy HH:mm') : 'N/A'}"></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm địa chỉ -->
+<div class="modal fade" id="addAddressModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm địa chỉ mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAddressForm" th:action="@{/dia-chi/save-new}" method="post" th:object="${newAddressRequest}">
+                    <div class="mb-3">
+                        <label class="form-label">Tên Người Dùng</label>
+                        <input type="text" class="form-control" id="hoTen" name="hoTen" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="sdt" name="sdt" required 
+                               placeholder="VD: 0912345678 hoặc +84912345678">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Thành phố</label>
+                        <input type="text" class="form-control" id="thanhPho" name="thanhPho" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quận/Huyện</label>
+                        <input type="text" class="form-control" id="quanHuyen" name="quanHuyen" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phường/Xã</label>
+                        <input type="text" class="form-control" id="phuongXa" name="phuongXa" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ chi tiết (Không bắt buộc)</label>
+                        <input type="text" class="form-control" id="diaChi" name="diaChi">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="macDinh" name="macDinh" value="true">
+                        <label class="form-check-label" for="macDinh">Đặt làm địa chỉ mặc định</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Thêm địa chỉ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa địa chỉ -->
+<div class="modal fade" id="editAddressModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh sửa Thông tin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAddressForm" th:action="@{/dia-chi/update}" method="post">
+                    <input type="hidden" id="editDiaChiId" name="diaChiId">
+                    <input type="hidden" id="editNguoiDungId" name="nguoiDungId">
+                    
+                    <h5>Thông tin người dùng</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Tên Người Dùng</label>
+                        <input type="text" class="form-control" id="editHoTen" name="hoTen" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="editSdt" name="sdt" required
+                               placeholder="VD: 0912345678 hoặc +84912345678">
+                    </div>
+
+                    <hr>
+                    <h5>Thông tin địa chỉ</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Thành phố</label>
+                        <input type="text" class="form-control" id="editThanhPho" name="thanhPho" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quận/Huyện</label>
+                        <input type="text" class="form-control" id="editQuanHuyen" name="quanHuyen" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phường/Xã</label>
+                        <input type="text" class="form-control" id="editPhuongXa" name="phuongXa" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ chi tiết (Không bắt buộc)</label>
+                        <input type="text" class="form-control" id="editDiaChi" name="diaChi">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="editMacDinh" name="macDinh" value="true">
+                        <label class="form-check-label" for="editMacDinh">Đặt làm địa chỉ mặc định</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =================================================================
+     FOOTER
+================================================================== -->
+<div class="top-features">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6"><div class="feature-item"><div class="feature-icon"><i class="fas fa-certificate"></i></div><div class="feature-text">100% HÀNG CHÍNH HÃNG</div></div></div>
+            <div class="col-lg-3 col-md-6 col-sm-6"><div class="feature-item"><div class="feature-icon"><i class="fas fa-shipping-fast"></i></div><div class="feature-text">MIỄN PHÍ VẬN CHUYỂN</div></div></div>
+            <div class="col-lg-3 col-md-6 col-sm-6"><div class="feature-item"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><div class="feature-text">BẢO HÀNH CHÍNH HÃNG</div></div></div>
+            <div class="col-lg-3 col-md-6 col-sm-6"><div class="feature-item"><div class="feature-icon"><i class="fas fa-exchange-alt"></i></div><div class="feature-text">ĐỔI HÀNG TRONG 7 NGÀY</div></div></div>
+        </div>
+    </div>
+</div>
+
+<footer class="main-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="footer-logo"><img th:src="@{/images/Logo2.png}" alt="Logo" class="img-fluid"></div>
+                <div class="footer-section">
+                    <h5>Thông tin liên hệ</h5>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i><strong>Mail:</strong> phucnhph50219@gmail.com</p>
+                        <p><i class="fas fa-phone"></i><strong>Hotline:</strong> 0123.456.789 - 0382.916.733</p>
+                        <p><i class="fas fa-map-marker-alt"></i><strong>Địa chỉ:</strong> Hà Nội, Việt Nam</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="footer-section">
+                    <h5>Hướng dẫn</h5>
+                    <ul>
+                        <li><a href="#">Hướng dẫn mua hàng</a></li>
+                        <li><a href="#">Hướng dẫn sử dụng đồng hồ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="footer-section">
+                    <h5>Sản phẩm & Dịch vụ</h5>
+                    <ul>
+                        <li><a href="#">Liên hệ & Đặt hàng</a></li>
+                        <li><a href="#">Dịch vụ in Logo lên đồng hồ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="footer-section">
+                    <h5>Đăng ký nhận tin</h5>
+                    <p class="newsletter-description">Nhận thông tin khuyến mãi và sản phẩm mới nhất</p>
+                    <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+                        <input type="email" class="newsletter-input" placeholder="Nhập địa chỉ email" required>
+                        <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane me-1"></i>Đăng ký</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-start"><p class="mb-0">© 2024 Watch Aura. All rights reserved.</p></div>
+                <div class="col-md-6 text-end"><p class="mb-0"><a href="#" style="color: #B9863EFF; text-decoration: none;">Điều khoản</a> | <a href="#" style="color: #B9863EFF; text-decoration: none;">Bảo mật</a></p></div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/layout.js}"></script>
+<script th:src="@{/js/address.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        var successToast = document.getElementById('successToast');
+        if (successToast) {
+            var toast = new bootstrap.Toast(successToast, { delay: 2000 });
+            toast.show();
+        }
+        var errorToast = document.getElementById('errorToast');
+        if (errorToast) {
+            var toast = new bootstrap.Toast(errorToast, { delay: 3000 });
+            toast.show();
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html> 
