@@ -1,4 +1,4 @@
-
+package datn.controller;
 import datn.entity.NguoiDung;
 import datn.repository.NguoiDungRepo;
 import org.springframework.beans.factory.annotation.Autowired;

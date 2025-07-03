@@ -1,11 +1,5 @@
 package datn.controller;
 
-import com.example.demo.dto.AddAddressRequest;
-import com.example.demo.dto.EditAddressRequest;
-import com.example.demo.entity.DiaChi;
-import com.example.demo.entity.NguoiDung;
-import com.example.demo.repo.DiaChiRepository;
-import com.example.demo.repo.NguoiDungRepository;
 import datn.dto.AddAddressRequest;
 import datn.entity.DiaChiNguoiDung;
 import datn.entity.NguoiDung;
