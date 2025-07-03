@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
+
 
 @Getter
 @Setter
@@ -58,5 +58,5 @@ public class DonHang {
 
     @ManyToOne
     @JoinColumn(name = "id_nhan_vien", referencedColumnName = "id")
-    private nhan_vien nhanVien;
+    private NhanVien nhanVien;
 }

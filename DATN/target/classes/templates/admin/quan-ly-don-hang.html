@@ -2,488 +2,632 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Quản Lý Đơn Hàng - Đồng Hồ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchaura - Shopping Cart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body {
-            background-color: #e9ecef;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: #2d3748;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family:  'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1400px;
-            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-            padding: 1rem 2rem;
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #4ECDC4;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .search-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tabs,
+        .product-item {
+            display: grid;
+            grid-template-columns: 80px 1.5fr 120px 80px 120px 120px;
+            align-items: center;
+            padding: 15px 30px;
+            gap: 10px;
+        }
+
+        .tabs {
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 10;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            color: #444;
         }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2d3748;
+        .product-list {
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #fff;
         }
 
-        .nav-filter {
-            position: relative;
+        .product-item {
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
         }
 
-        .dropdown-menu {
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 1rem;
-            min-width: 300px;
-        }
-
-        .summary-row {
+        .product-image {
+            width: 70px;
+            height: 70px;
+            background: #fff;
+            border-radius: 45px;
             display: flex;
-            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Prevent image overflow */
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Maintain aspect ratio, cover container */
+            display: block;
+        }
+
+        .product-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .price, .quantity, .total-price {
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+        }
+
+        .total-price {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .status {
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 15px;
+            padding: 6px 10px;
+            display: inline-block;
+        }
+
+        .status.completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.shipping {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .watch-pink { color: #ff6b9d; }
+        .watch-black { color: #2c3e50; }
+        .watch-brown { color: #8b4513; }
+        .watch-blue { color: #3498db; }
+
+        .top-features {
+            background: linear-gradient(135deg, #a0616a, #8b4c55);
+            padding: 20px 0;
+            color: white;
+        }
+
+        .feature-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 20px;
         }
 
-        .summary-card {
-            flex: 1;
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease;
+        .feature-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 240px;
+            justify-content: center;
+            flex: 1 1 200px;
         }
 
-        .summary-card:hover {
-            transform: translateY(-3px);
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
         }
 
-        .order-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+        .text {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-        .order-card {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            padding: 1.5rem;
-            transition: box-shadow 0.3s, transform 0.3s;
+        .product-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .product-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .product-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .product-list::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .main-footer {
+            background-image: url('/images/Back2.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #ffffff;
+            padding: 60px 0 30px;
             position: relative;
             overflow: hidden;
         }
 
-        .order-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-            transform: translateY(-5px);
+        .footer-section {
+            position: relative;
+            z-index: 2;
         }
 
-        .order-status {
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding: 0.5rem 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 0 8px 0 8px;
+        .footer-logo {
+            margin-bottom: 30px;
         }
 
-        .btn-custom {
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-weight: 500;
-            font-size: 14px;
-            transition: background-color 0.2s, color 0.2s;
+        .footer-logo img {
+            max-width: 180px;
+            height: auto;
+            filter: brightness(1.1);
         }
 
-        .btn-primary {
-            background-color: #1e3a8a;
-            border-color: #1e3a8a;
-        }
-
-        .btn-primary:hover {
-            background-color: #1e40af;
-            border-color: #1e40af;
-        }
-
-        .btn-outline-secondary {
-            border-color: #6b7280;
-            color: #6b7280;
-        }
-
-        .btn-outline-secondary:hover {
-            background-color: #6b7280;
+        .footer-section h5 {
             color: #ffffff;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 25px;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .modal-content {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        .contact-info {
+            margin-top: 20px;
         }
 
-        .modal-header {
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .modal-footer {
-            background-color: #f8fafc;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .form-control, .form-select {
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            transition: border-color 0.3s;
+        .contact-info p {
+            margin-bottom: 12px;
+            color: #e3f2fd;
             font-size: 14px;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-        }
-
-        .pagination .page-link {
-            border-radius: 6px;
-            margin: 0 4px;
-            color: #1e3a8a;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: #1e3a8a;
-            border-color: #1e3a8a;
-            color: #ffffff;
-        }
-
-        .custom-toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 280px;
-            max-width: 400px;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
             display: flex;
             align-items: center;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 3s forwards;
         }
 
-        .toast-success {
-            background-color: #ffffff;
-            color: #218838;
-            border-left: 4px solid #218838;
+        .contact-info p strong {
+            color: #b9863e;
+            min-width: 60px;
+            margin-right: 8px;
         }
 
-        .toast-error {
-            background-color: #ffffff;
-            color: red;
-            border-left: 4px solid red;
-        }
-
-        @keyframes slideIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateY(-20px); }
-        }
-
-        .no-data {
-            color: rgba(107, 114, 128, 0.6);
-            font-style: italic;
-            font-size: 1rem;
+        .contact-info p i {
+            color: #b9863e;
+            margin-right: 12px;
+            width: 16px;
             text-align: center;
-            padding: 2rem;
         }
 
-        .no-data i {
-            opacity: 0.6;
-            vertical-align: middle;
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #1e3a8a;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
+        .footer-section ul li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 20px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .footer-section ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #b9863e;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a {
+            color: #e3f2fd;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+
+        .footer-section ul li:hover::before {
+            color: #b9863e;
+            transform: translateX(3px);
+        }
+
+        .footer-section ul li a:hover {
+            color: #b9863e;
+            padding-left: 5px;
+        }
+
+        .newsletter-form {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .newsletter-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(100, 181, 246, 0.3);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: #64b5f6;
+            box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .newsletter-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #64b5f6, #42a5f5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+            background: linear-gradient(45deg, #42a5f5, #1e88e5);
+        }
+
+        .newsletter-description {
+            color: #ffffff;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .footer-bottom {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            color: #B9863EFF;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .main-footer {
+                padding: 40px 0 20px;
+                background-attachment: scroll;
+            }
+
+            .footer-section {
+                margin-bottom: 40px;
+            }
+
+            .footer-logo img {
+                max-width: 150px;
+            }
+
+            .product-list {
+                max-height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .brand-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-banner {
+                height: 350px;
+            }
+
+            .search-box {
+                max-width: 200px;
+            }
+
+            .feature-item {
+                margin-bottom: var(--spacing-md);
+            }
+
+            .footer-section {
+                margin-bottom: var(--spacing-xl);
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-input {
+                border-radius: var(--radius-xl);
+                margin-bottom: var(--spacing-sm);
+            }
+
+            .newsletter-btn {
+                border-radius: var(--radius-xl);
+            }
+
+            .blog-card-body {
+                flex-direction: column;
+            }
+
+            .blog-image {
+                width: 100%;
+                height: 200px;
+            }
         }
     </style>
 </head>
-<body class="antialiased">
-<div class="navbar">
-    <div class="container d-flex justify-content-between align-items-center">
-        <span class="navbar-brand">Quản Lý Đơn Hàng</span>
-        <div class="d-flex gap-2 align-items-center">
-            <div class="nav-filter">
-                <button class="btn btn-custom btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-funnel me-1"></i> Bộ Lọc
-                </button>
-                <div class="dropdown-menu">
-                    <form th:action="@{/quan-ly/don-hang}" method="get">
-                        <div class="mb-3">
-                            <label class="form-label text-sm font-medium">Mã Đơn Hàng</label>
-                            <input type="text" class="form-control" name="maDonHang" placeholder="VD: DH001">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-sm font-medium">Khách Hàng</label>
-                            <input type="text" class="form-control" name="khachHang" placeholder="Tên khách hàng">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-sm font-medium">Trạng Thái</label>
-                            <select class="form-select" name="trangThai">
-                                <option value="">-- Tất cả --</option>
-                                <option th:each="status : ${listStatus}" th:value="${status}" th:text="${status}"></option>
-                            </select>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-custom">Lọc</button>
-                            <a href="/quan-ly/don-hang" class="btn btn-outline-secondary btn-custom">Reset</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <button class="btn btn-custom btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exportModal">
-                <i class="bi bi-file-earmark-arrow-down me-1"></i> Xuất Excel
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">📋</div>
+            <div class="logo-text">WATCHAURA | ĐƠN HÀNG</div>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="TÌM KIẾM SẢN PHẨM BẠN CẦN...">
+            <button class="search-btn">
+                <span>🔍</span> Tìm kiếm
             </button>
         </div>
     </div>
+
+    <div class="tabs">
+        <div></div>
+        <div>Sản phẩm</div>
+        <div>Đơn giá</div>
+        <div>Số lượng</div>
+        <div>Thành tiền</div>
+        <div>Trạng thái</div>
+    </div>
+
+    <div class="product-list">
+        <div class="product-item" th:each="o : ${orders}">
+            <div class="product-image">
+                <img th:src="@{'/images/'+${o.hinhAnh}}">
+            </div>
+            <div class="product-name" th:text="${o.tenSanPham}"></div>
+            <div class="price" th:text="${#numbers.formatDecimal(o.donGia, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div>
+            <div class="quantity" th:text="'x' + ${o.soLuongDat}"></div>
+            <div class="total-price" th:text="${#numbers.formatDecimal(o.tongGia, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div>
+            <div class="status" th:classappend="${o.trangThai == 'Hoàn tất' ? 'completed' : 'shipping'}" th:text="${o.trangThai}"></div>
+        </div>
+    </div>
 </div>
 
-<div class="container">
-    <!-- Summary Cards -->
-    <div class="summary-row">
-        <div class="summary-card">
-            <span class="text-sm font-medium text-gray-600">Tổng Đơn Hàng</span>
-            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${totalOrders}"></p>
-        </div>
-        <div class="summary-card">
-            <span class="text-sm font-medium text-gray-600">Chờ Xử Lý</span>
-            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${pendingOrders}"></p>
-        </div>
-        <div class="summary-card">
-            <span class="text-sm font-medium text-gray-600">Tổng Doanh Thu</span>
-            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></p>
-        </div>
-        <div class="summary-card">
-            <span class="text-sm font-medium text-gray-600">Đơn Hàng Hủy</span>
-            <p class="text-2xl font-semibold text-gray-900 mt-1" th:text="${canceledOrders}"></p>
-        </div>
-    </div>
-
-    <!-- Orders Grid -->
-    <div th:if="${listOrders.isEmpty()}" class="no-data">
-        <i class="bi bi-database fs-5 me-2"></i>
-        <em>Không có đơn hàng nào...</em>
-    </div>
-    <div class="order-grid" th:unless="${listOrders.isEmpty()}">
-        <div th:each="order,stat : ${listOrders}" class="order-card">
-            <span th:class="${order.trangThai == 'Hủy' ? 'order-status bg-red-100 text-red-600' : order.trangThai == 'Chờ xử lý' ? 'order-status bg-yellow-100 text-yellow-600' : 'order-status bg-green-100 text-green-600'}" th:text="${order.trangThai}"></span>
-            <h5 class="font-semibold text-gray-900 mb-2" th:text="'#' + ${order.maDonHang}"></h5>
-            <p class="text-sm text-gray-600 mb-1"><strong>Khách Hàng:</strong> <span th:text="${order.khachHang.hoTen}"></span></p>
-            <p class="text-sm text-gray-600 mb-1"><strong>Ngày Đặt:</strong> <span th:text="${#temporals.format(order.ngayDat, 'dd/MM/yyyy HH:mm')}"></span></p>
-            <p class="text-sm text-gray-600 mb-3"><strong>Tổng Tiền:</strong> <span th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span></p>
-            <div class="d-flex gap-2">
-                <button class="btn btn-custom btn-outline-secondary btn-chi-tiet" th:attr="data-id=${order.id}" data-bs-toggle="modal" data-bs-target="#detailModal">
-                    <i class="bi bi-eye me-1"></i> Chi Tiết
-                </button>
-                <button class="btn btn-custom btn-outline-secondary btn-cap-nhat" th:attr="data-id=${order.id}" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
-                    <i class="bi bi-pencil me-1"></i> Cập Nhật
-                </button>
+<div class="top-features">
+    <div class="feature-row">
+        <div class="feature-box">
+            <div class="icon-circle">
+                <i class="fas fa-certificate"></i>
             </div>
+            <div class="text">100% HÀNG CHÍNH HÃNG</div>
+        </div>
+        <div class="feature-box">
+            <div class="icon-circle">
+                <i class="fas fa-shipping-fast"></i>
+            </div>
+            <div class="text">MIỄN PHÍ VẬN CHUYỂN</div>
+        </div>
+        <div class="feature-box">
+            <div class="icon-circle">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="text">BẢO HÀNH CHÍNH HÃNG</div>
+        </div>
+        <div class="feature-box">
+            <div class="icon-circle">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+            <div class="text">ĐỔI HÀNG TRONG 7 NGÀY</div>
         </div>
     </div>
-
-    <!-- phan trang -->
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/quan-ly/don-hang(page=${startPage - 1})}">«</a>
-            </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}" th:classappend="${i == startPage} ? 'active'">
-                <a class="page-link" th:href="@{/quan-ly/don-hang(page=${i})}" th:text="${i + 1}"></a>
-            </li>
-            <li class="page-item" th:classappend="${startPage == totalPage - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/quan-ly/don-hang(page=${startPage + 1})}">»</a>
-            </li>
-        </ul>
-    </nav>
 </div>
 
-<!-- modal don hang chi tiet -->
-<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailModalLabel">Chi Tiết Đơn Hàng</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p><strong>Mã Đơn Hàng:</strong> <span id="detail-maDonHang"></span></p>
-                        <p><strong>Khách Hàng:</strong> <span id="detail-khachHang"></span></p>
-                        <p><strong>Ngày Đặt:</strong> <span id="detail-ngayDat"></span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Tổng Tiền:</strong> <span id="detail-tongTien"></span></p>
-                        <p><strong>Trạng Thái:</strong> <span id="detail-trangThai"></span></p>
-                        <p><strong>Ghi Chú:</strong> <span id="detail-ghiChu"></span></p>
-                    </div>
+<footer class="main-footer">
+    <div class="container">
+        <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+            <div class="footer-section" style="flex: 1 1 250px; margin-bottom: 30px;">
+                <div class="footer-logo">
+                    <img src="/images/Logo2.png" alt="Logo" style="max-width: 180px;">
                 </div>
-                <h6 class="font-semibold mb-2">Sản Phẩm Đặt Hàng</h6>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover text-sm text-center">
-                        <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Tên Sản Phẩm</th>
-                            <th>Số Lượng</th>
-                            <th>Đơn Giá</th>
-                            <th>Thành Tiền</th>
-                        </tr>
-                        </thead>
-                        <tbody id="detail-items">
-                        </tbody>
-                    </table>
+                <h5>Thông tin liên hệ</h5>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i><strong>Mail:</strong> phucnhph50219@gmail.com</p>
+                    <p><i class="fas fa-phone"></i><strong>Hotline:</strong> 0123.456.789 - 0382.916.733</p>
+                    <p><i class="fas fa-map-marker-alt"></i><strong>Địa chỉ:</strong> Hà Nội, Việt Nam</p>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- modal update status -->
-<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateStatusModalLabel">Cập Nhật Trạng Thái</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            <div class="footer-section" style="flex: 1 1 200px; margin-bottom: 30px;">
+                <h5>Hướng dẫn</h5>
+                <ul>
+                    <li><a href="#">Hướng dẫn mua hàng</a></li>
+                    <li><a href="#">Sử dụng đồng hồ</a></li>
+                    <li><a href="#">Chính sách đổi hàng</a></li>
+                    <li><a href="#">Chính sách bảo hành</a></li>
+                    <li><a href="#">Thông tin chuyển khoản</a></li>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                </ul>
             </div>
-            <div class="modal-body">
-                <form method="post" th:action="@{/quan-ly/don-hang/cap-nhat}" id="formUpdateStatus">
-                    <input type="hidden" name="id" id="update-id">
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="trangThai" name="trangThai" required>
-                            <option value="">-- Chọn trạng thái --</option>
-                            <option th:each="status : ${listStatus}" th:value="${status}" th:text="${status}"></option>
-                        </select>
-                        <label for="trangThai">Trạng Thái <span class="text-danger">*</span></label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="ghiChu" name="ghiChu" placeholder="Ghi chú">
-                        <label for="ghiChu">Ghi chú</label>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary btn-custom">Lưu</button>
-                        <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Hủy</button>
-                    </div>
+
+            <div class="footer-section" style="flex: 1 1 200px; margin-bottom: 30px;">
+                <h5>Sản phẩm & Dịch vụ</h5>
+                <ul>
+                    <li><a href="#">Liên hệ & Đặt hàng</a></li>
+                    <li><a href="#">In Logo lên đồng hồ</a></li>
+                    <li><a href="#">Khắc Laser</a></li>
+                    <li><a href="#">Hộp đựng đồng hồ</a></li>
+                    <li><a href="#">Bảo trì & sửa chữa</a></li>
+                    <li><a href="#">Tư vấn chọn đồng hồ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section" style="flex: 1 1 250px; margin-bottom: 30px;">
+                <h5>Đăng ký nhận tin</h5>
+                <p class="newsletter-description">
+                    Nhận thông tin khuyến mãi và sản phẩm mới từ chúng tôi
+                </p>
+                <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+                    <input type="email" class="newsletter-input" placeholder="Nhập email của bạn" required>
+                    <button type="submit" class="newsletter-btn">
+                        <i class="fas fa-paper-plane"></i> Đăng ký
+                    </button>
                 </form>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- modal export -->
-<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exportModalLabel">Xuất Dữ Liệu Đơn Hàng</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" th:action="@{/quan-ly/don-hang/export}">
-                    <p>Xuất danh sách đơn hàng dưới dạng file Excel.</p>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary btn-custom">Xuất File</button>
-                        <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Hủy</button>
-                    </div>
-                </form>
-            </div>
+        <div class="footer-bottom" style="margin-top: 30px; padding-top: 20px; text-align: center;">
+            <p>© 2025 WatchAura. Tất cả quyền được bảo lưu. |
+                <a href="#" style="color: #B9863EFF;">Đổi khoản</a> |
+                <a href="#" style="color: #B9863EFF;">Chính sách bảo mật</a>
+            </p>
         </div>
     </div>
-</div>
+</footer>
 
-<!-- Toast Notifications -->
-<div th:if="${successMessage}" class="custom-toast toast-success" id="toastSuccess">
-    <i class="fas fa-check-circle me-2"></i>
-    <span th:text="${successMessage}"></span>
-</div>
-<div th:if="${errorMessage}" class="custom-toast toast-error" id="toastError">
-    <i class="fas fa-exclamation-circle me-2"></i>
-    <span th:utext="${errorMessage.length() > 100 ? (errorMessage.substring(0, 100) + '... <a href=\'#\' data-bs-toggle=\'modal\' data-bs-target=\'#errorDetailModal\'>Xem chi tiết</a>') : errorMessage}"></span>
-</div>
-
-<!-- Modal: Detailed Error -->
-<div class="modal fade" id="errorDetailModal" tabindex="-1" aria-labelledby="errorDetailModalLabel">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="errorDetailModalLabel">Chi Tiết Lỗi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body">
-                <p th:utext="${errorMessage != null ? #strings.replace(errorMessage, ';', '<br>') : ''}"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    function handleNewsletterSubmit(event) {
+        event.preventDefault();
+        const email = event.target.querySelector('input[type="email"]').value;
 
-    document.querySelectorAll('.btn-chi-tiet').forEach(button => {
-        button.addEventListener('click', () => {
-            const id = button.dataset.id;
-            document.getElementById('detail-maDonHang').textContent = 'DH' + id.padStart(4, '0');
-        });
-    });
+        if (email) {
+            const btn = event.target.querySelector('.newsletter-btn');
+            const originalText = btn.innerHTML;
 
-    document.querySelectorAll('.btn-cap-nhat').forEach(button => {
-        button.addEventListener('click', () => {
-            const id = button.dataset.id;
-            document.getElementById('update-id').value = id;
-        });
-    });
+            btn.innerHTML = '✓ Đã đăng ký';
+            btn.style.background = '#27ae60';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = 'linear-gradient(45deg, #64b5f6, #42a5f5)';
+                event.target.reset();
+            }, 2000);
+
+            alert('Cảm ơn bạn đã đăng ký nhận tin từ WatchAura!');
+        }
+    }
 </script>
 </body>
 </html>
