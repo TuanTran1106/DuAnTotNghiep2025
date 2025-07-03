@@ -561,17 +561,6 @@
     <p th:text="${successMessage}"></p>
 </div>
 
-<div id="addForm" style="
-  display: none;
-  width: 90%;
-  margin: 20px auto;
-  padding: 15px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  text-align: center;
-">
-</div>
 <div id="successAlert" style="
   display: none;
   background-color: #d4edda;
@@ -597,13 +586,13 @@
     <tbody>
     <tr th:each="nd : ${list}">
         <td>
-            <img th:src="@{'/images/' + ${nd.hinhanh}}" alt="Ảnh đại diện"
+            <img th:src="@{'/images/' + ${nd.hinhAnh}}" alt="Ảnh đại diện"
                  style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
         </td>
-        <td th:text="${nd.hoten}"></td>
+        <td th:text="${nd.hoTen}"></td>
         <td th:text="${nd.email}"></td>
         <td th:text="${nd.sdt}"></td>
-        <td th:text="${nd.gioi_tinh ? 'Nam' : 'Nữ'}"></td>
+        <td th:text="${nd.gioiTinh ? 'Nam' : 'Nữ'}"></td>
         <td>
             <a th:href="@{|/nguoidung/detail/${nd.id}|}"
                style="background-color:#3498db; color:white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">
