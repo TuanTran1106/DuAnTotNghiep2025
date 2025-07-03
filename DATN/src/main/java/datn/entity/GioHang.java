@@ -27,15 +27,11 @@ public class GioHang {
     @Column(name = "ngay_them")
     private LocalDateTime ngayThem;
 
-    @Column(name = "so_luong")
-    private Integer soLuong;
-
     @ManyToOne
     @JoinColumn(name = "id_nguoi_dung", referencedColumnName = "id")
     private NguoiDung nguoiDung;
 
-    @ManyToOne
-    @JoinColumn(name = "id_san_pham_chi_tiet")
-    private SanPhamChiTiet sanPhamChiTiet;
+    @OneToMany(mappedBy = "gioHang")
+    private List<ChiTietGioHang> chiTietGioHangList;
 
 }

@@ -31,18 +31,19 @@ public class GioHangController {
     private GioHangRepo gioHangRepo;
 
     @Autowired
+    private GioHangService  gioHangService;
+
+    @Autowired
     private ChiTietGioHangRepo chiTietGioHangRepo;
 
     @GetMapping()
     public String hienThiGioHang(HttpSession session, Model model) {
         Integer idNguoiDung = (Integer) session.getAttribute("idNguoiDung");
 
-        // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
         if (idNguoiDung == null) {
             return "redirect:/login";
         }
 
-        // Đã đăng nhập → lấy dữ liệu giỏ hàng
         List<ChiTietGioHang> danhSach = chiTietGioHangService.laySanPhamTrongGio(idNguoiDung);
         model.addAttribute("gioHang", danhSach);
 
@@ -62,26 +63,29 @@ public class GioHangController {
     @PostMapping("/them")
     public String themVaoGio(@RequestParam Integer spctId,
                              @RequestParam(defaultValue = "1") Integer soLuong,
-                             @SessionAttribute("idNguoiDung") Integer idNguoiDung) {
+                             HttpSession session) {
 
-        Integer idGioHang = layIdGioHangTheoNguoiDung(idNguoiDung);
-        chiTietGioHangService.themSanPhamVaoGio(idGioHang, spctId, soLuong);
+        Integer idNguoiDung = (Integer) session.getAttribute("idNguoiDung");
+        if (idNguoiDung == null) {
+            return "redirect:/login";
+        }
+
+        gioHangService.themSanPhamVaoGio(idNguoiDung, spctId, soLuong);
         return "redirect:/gio-hang";
     }
-
 
     @GetMapping("/xoa")
     public String xoaKhoiGio(@RequestParam Integer spctId,
-                             @SessionAttribute("idNguoiDung") Integer idNguoiDung) {
-        Integer idGioHang = layIdGioHangTheoNguoiDung(idNguoiDung);
-        chiTietGioHangService.xoaSanPhamKhoiGio(idGioHang, spctId);
+                             HttpSession session) {
+        Integer idNguoiDung = (Integer) session.getAttribute("idNguoiDung");
+        if (idNguoiDung == null) {
+            return "redirect:/login";
+        }
+
+        chiTietGioHangService.xoaSanPhamKhoiGio(idNguoiDung, spctId);
         return "redirect:/gio-hang";
     }
 
-    private Integer layIdGioHangTheoNguoiDung(Integer idNguoiDung) {
-        Optional<GioHang> gioHangOpt = gioHangRepo.findFirstByNguoiDung_Id(idNguoiDung);
-        return gioHangOpt.map(GioHang::getId).orElse(null);
-    }
     @PostMapping("/xoa")
     public String xoaSanPham(@RequestParam("id") Integer id) {
         chiTietGioHangRepo.deleteById(id);
@@ -104,9 +108,10 @@ public class GioHangController {
         if (ctgh != null && ctgh.getSoLuong() > 1) {
             ctgh.setSoLuong(ctgh.getSoLuong() - 1);
             chiTietGioHangRepo.save(ctgh);
-        } else if (ctgh != null && ctgh.getSoLuong() == 1) {
-            chiTietGioHangRepo.delete(ctgh); // Nếu còn 1 thì xóa luôn
+        } else if (ctgh != null) {
+            chiTietGioHangRepo.delete(ctgh);
         }
         return "redirect:/gio-hang";
     }
 }
+
