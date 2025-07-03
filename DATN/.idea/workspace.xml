@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f5c7e6df-ec77-4f7e-ad8c-4e806bca86f7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/as.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/controller/GioHangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/controller/GioHangController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/controller/SanPhamChiTietController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/controller/SanPhamChiTietController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/entity/GioHang.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/entity/GioHang.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/repository/ChiTietGioHangRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/repository/ChiTietGioHangRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/repository/GioHangRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/repository/GioHangRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/service/ChiTietGioHangService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/service/ChiTietGioHangService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/service/GioHangService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/service/GioHangService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/service/impl/ChiTietGioHangServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/service/impl/ChiTietGioHangServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/datn/service/impl/GioHangServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/datn/service/impl/GioHangServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/Back2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/Back2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/Background.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/Background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/Banner.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/Banner.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/Logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/Logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/Logo2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/Logo2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/apple.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/apple.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/default.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/default.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rolex2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/rolex2.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/chi-tiet-san-pham.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/chi-tiet-san-pham.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/DemoApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controller/KhuyenMaiController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dao/KhuyenMaiDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/entity/KhuyenMai.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/DemoApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/config/ImageConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/config/WebConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/controller/GioHangController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/controller/KhachHangController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/controller/LoginController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/controller/SanPhamChiTietController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/controller/admin/QuanLyDonHangController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/controller/admin/QuanLyKhoController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/dto/DonHangDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/dto/KhoDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/ChiTietDonHang.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/ChiTietGioHang.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/DanhMuc.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/DiaChiNguoiDung.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/DonHang.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/GioHang.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/HinhAnhSanPham.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/KhuyenMai.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/LichSuDangNhap.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/LichSuKho.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/NguoiDung.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/NhanVien.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/PhanQuyen.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/PhuongThucThanhToan.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/SPCTKhuyenMai.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/SanPham.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/SanPhamChiTiet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/ThuongHieu.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/TrangThaiDonHang.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/Voucher.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/entity/VoucherNguoiDung.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/exception/ResourceNotFoundException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/ChiTietGioHangRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/DanhMucRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/DonHangRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/GioHangRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/HinhAnhSanPham.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/KhoRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/LichSuKhoRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/NguoiDungRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/SanPhamChiTietRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/SanPhamRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/repository/ThuongHieuRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/security/SecurityConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/ChiTietGioHangService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/DonHangService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/GioHangService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/KhoService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/LichSuKhoService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/NguoiDungService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/impl/ChiTietGioHangServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/impl/DonHangServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/impl/GioHangServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/impl/KhoServiceImpl$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/impl/KhoServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/impl/LichSuKhoServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/datn/service/impl/NguoiDungServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/css/gio-hang.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/css/login.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/css/trang-chu.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/Back2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/Background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/Banner.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/Logo2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/apple.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/casioden.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/default.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rolex.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rolex2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/TrangChu.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/quan-ly-don-hang.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/quan-ly-kho.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/chi-tiet-san-pham.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/detail.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/detailND.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/gio-hang.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/khuyenmai.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/nguoidung.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/nhanvien.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/trang-chu.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/datn/demo/DemoApplicationTests.class" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/datn/entity/ChiTietDonHang.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectId" id="2zHKkrsLrDnzxBt3Ms6kR44dfkx" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="RunManager">
+    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="demo" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="datn.DemoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f5c7e6df-ec77-4f7e-ad8c-4e806bca86f7" name="Default Changelist" comment="" />
+      <created>1751382705009</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1751382705009</updated>
+      <workItem from="1751382706224" duration="1928000" />
+      <workItem from="1751469645635" duration="1031000" />
+      <workItem from="1751532210851" duration="4142000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>

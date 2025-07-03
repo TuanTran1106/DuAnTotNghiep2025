@@ -4,18 +4,14 @@ import datn.entity.GioHang;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface GioHangService {
 
     List<GioHang> layGioHangTheoNguoiDung(int nguoiDungId);
 
-    void themSanPhamVaoGio(int nguoiDungId, int idSanPhamChiTiet);
+    void themSanPhamVaoGio(int nguoiDungId, int idSanPhamChiTiet, int soLuong);
 
-    void tangSoLuong(int gioHangId);
+    BigDecimal tinhTongTien(GioHang gioHang);
 
-    void giamSoLuong(int gioHangId);
-
-    void xoaSanPham(int gioHangId);
-
-    BigDecimal tinhTongTien(List<GioHang> gioHang);
 }

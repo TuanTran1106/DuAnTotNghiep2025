@@ -1,10 +1,13 @@
 package datn.service.impl;
 
+import datn.entity.ChiTietGioHang;
 import datn.entity.GioHang;
+import datn.repository.ChiTietGioHangRepo;
 import datn.repository.GioHangRepo;
 import datn.repository.NguoiDungRepo;
 import datn.repository.SanPhamChiTietRepo;
 import datn.service.GioHangService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class GioHangServiceImpl implements GioHangService {
+
+    @Autowired
+    private ChiTietGioHangRepo chiTietGioHangRepo;
+
     @Autowired
     private GioHangRepo gioHangRepo;
 
@@ -30,53 +36,47 @@ public class GioHangServiceImpl implements GioHangService {
         return gioHangRepo.findByNguoiDung_Id(nguoiDungId);
     }
 
+
     @Override
-    public void themSanPhamVaoGio(int nguoiDungId, int idSanPhamChiTiet) {
-        // kiểm tra đã có sản phẩm này trong giỏ chưa
-        List<GioHang> danhSach = gioHangRepo.findByNguoiDung_Id(nguoiDungId);
-        Optional<GioHang> daCo = danhSach.stream()
-                .filter(g -> g.getSanPhamChiTiet().getId().equals(idSanPhamChiTiet))
-                .findFirst();
+    @Transactional
+    public void themSanPhamVaoGio(int idNguoiDung, int idSanPhamChiTiet, int soLuong) {
+
+        List<GioHang> danhSach = gioHangRepo.findByNguoiDung_Id(idNguoiDung);
+        GioHang gioHang;
+
+        if (danhSach.isEmpty()) {
+            gioHang = new GioHang();
+            gioHang.setNguoiDung(nguoiDungRepo.findById(idNguoiDung).orElseThrow());
+            gioHang.setNgayThem(LocalDateTime.now());
+            gioHang = gioHangRepo.save(gioHang);
+        } else {
+            gioHang = danhSach.get(0);
+        }
+
+        Optional<ChiTietGioHang> daCo = chiTietGioHangRepo.findByGioHang_IdAndSanPhamChiTiet_Id(
+                gioHang.getId(), idSanPhamChiTiet
+        );
 
         if (daCo.isPresent()) {
-            GioHang gh = daCo.get();
-            gh.setSoLuong(gh.getSoLuong() + 1);
-            gioHangRepo.save(gh);
+            ChiTietGioHang ct = daCo.get();
+            ct.setSoLuong(ct.getSoLuong() + soLuong);
+            chiTietGioHangRepo.save(ct);
         } else {
-            GioHang moi = new GioHang();
-            moi.setNguoiDung(nguoiDungRepo.findById(nguoiDungId).get());
-            moi.setSanPhamChiTiet(sanPhamChiTietRepo.findById(idSanPhamChiTiet).get());
-            moi.setSoLuong(1);
-            moi.setNgayThem(LocalDateTime.now());
-            gioHangRepo.save(moi);
+            ChiTietGioHang moi = new ChiTietGioHang();
+            moi.setGioHang(gioHang);
+            moi.setSanPhamChiTiet(sanPhamChiTietRepo.findById(idSanPhamChiTiet).orElseThrow());
+            moi.setSoLuong(soLuong);
+            chiTietGioHangRepo.save(moi);
         }
     }
+
+
     @Override
-    public BigDecimal tinhTongTien(List<GioHang> gioHang) {
-        return gioHang.stream()
-                .map(g -> BigDecimal.valueOf(g.getSoLuong())
-                        .multiply(g.getSanPhamChiTiet().getGiaBan()))
+    public BigDecimal tinhTongTien(GioHang gioHang) {
+        List<ChiTietGioHang> dsChiTiet = chiTietGioHangRepo.findByGioHang_Id(gioHang.getId());
+        return dsChiTiet.stream()
+                .map(ct -> BigDecimal.valueOf(ct.getSoLuong())
+                        .multiply(ct.getSanPhamChiTiet().getGiaBan()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-
-    @Override
-    public void tangSoLuong(int gioHangId) {
-        GioHang gh = gioHangRepo.findById(gioHangId).orElseThrow();
-        gh.setSoLuong(gh.getSoLuong() + 1);
-        gioHangRepo.save(gh);
-    }
-
-    @Override
-    public void giamSoLuong(int gioHangId) {
-        GioHang gh = gioHangRepo.findById(gioHangId).orElseThrow();
-        int newSoLuong = Math.max(1, gh.getSoLuong() - 1);
-        gh.setSoLuong(newSoLuong);
-        gioHangRepo.save(gh);
-    }
-
-    @Override
-    public void xoaSanPham(int gioHangId) {
-        gioHangRepo.deleteById(gioHangId);
     }
 }
